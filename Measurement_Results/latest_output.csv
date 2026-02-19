@@ -1,0 +1,9 @@
+Measurement,1
+Value,-100,µV
+Date,2026-02-06
+Time,12:37:42
+
+Statistics,Average,Minimum,Maximum,Std Deviation
+,-100,-100,-100,0,µV
+
+Measurement Type,DC Voltage

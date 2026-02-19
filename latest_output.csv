@@ -1,0 +1,11 @@
+﻿Measurement,1,2,3,4,5
+Value,100.003810,100.002250,100.001660,100.001960,100.001930,mV
+Date,2026-01-13,,,,
+Time,14:32:02,,,,
+
+Statistics,Average,Minimum,Maximum,Std Deviation
+,100.002322,100.001660,100.003810,0.000858,mV
+
+Measurement Type,DC Voltage
+Total Measurements,5
+Sampling Interval,2.0 s
