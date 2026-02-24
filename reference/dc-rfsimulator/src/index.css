@@ -1,0 +1,373 @@
+/* ============================================
+   INDEX.CSS - Global Styles & Variables
+   ============================================ */
+
+/* --- CSS Variables --- */
+:root {
+  /* Primary Colors - Orange Theme */
+  --primary-color: #f97316;
+  --primary-dark: #ea580c;
+  --primary-light: #fb923c;
+  --success-color: #22c55e;
+  --warning-color: #eab308;
+  --danger-color: #ef4444;
+  --info-color: #f97316;
+
+  /* Neutral Colors - Black Theme */
+  --dark-bg: #0a0a0a;
+  --dark-secondary: #171717;
+  --dark-tertiary: #262626;
+  --light-bg: #1a1a1a;
+  --text-light: #a1a1aa;
+  --text-white: #ffffff;
+
+  /* Orange Accent */
+  --orange-50: #fff7ed;
+  --orange-100: #ffedd5;
+  --orange-200: #fed7aa;
+  --orange-300: #fdba74;
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+  --orange-600: #ea580c;
+  --orange-700: #c2410c;
+  --orange-800: #9a3412;
+  --orange-900: #7c2d12;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --shadow-orange: 0 4px 20px rgba(249, 115, 22, 0.3);
+}
+
+/* --- Reset & Base --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  overflow: hidden;
+  height: 100vh;
+  color: var(--text-white);
+}
+
+#root {
+  height: 100vh;
+}
+
+/* --- Scrollbar Styling --- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--orange-600);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange-500);
+}
+
+/* --- Common Utilities --- */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* --- Button Base --- */
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  box-shadow: var(--shadow-md);
+  color: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+}
+
+.btn-success {
+  background: var(--success-color);
+}
+
+.btn-warning {
+  background: var(--warning-color);
+}
+
+.btn-info {
+  background: var(--info-color);
+}
+
+.btn-danger {
+  background: var(--danger-color);
+}
+
+/* --- Connection Points (Banana Jack Style) --- */
+.connection-point {
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle at 30% 30%, #6b7280 0%, #374151 100%);
+  border: 3px solid #4b5563;
+  border-radius: 50%;
+  position: absolute;
+  cursor: crosshair;
+  z-index: 10;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Inner hole effect */
+.connection-point::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Label for polarity */
+.connection-point::after {
+  content: '';
+  position: absolute;
+  font-size: 8px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+}
+
+.connection-point:hover {
+  transform: scale(1.3);
+}
+
+/* HI (Positive/Red) Polarity - Banana Jack Style */
+.connection-point.hi {
+  background: radial-gradient(circle at 30% 30%, #f87171 0%, #dc2626 80%, #991b1b 100%);
+  border-color: #b91c1c;
+}
+
+.connection-point.hi::after {
+  content: 'HI';
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ef4444;
+}
+
+.connection-point.hi:hover {
+  box-shadow:
+    0 0 15px rgba(239, 68, 68, 0.7),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.connection-point.hi.active {
+  transform: scale(1.4);
+  box-shadow:
+    0 0 20px rgba(239, 68, 68, 0.9),
+    0 0 40px rgba(239, 68, 68, 0.5);
+  animation: pulseHi 1s ease-in-out infinite;
+}
+
+.connection-point.hi.matching {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.9);
+  animation: pulseHi 0.5s ease-in-out infinite;
+}
+
+@keyframes pulseHi {
+
+  0%,
+  100% {
+    transform: scale(1.3);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.7);
+  }
+
+  50% {
+    transform: scale(1.5);
+    box-shadow: 0 0 25px rgba(239, 68, 68, 1);
+  }
+}
+
+/* LO (Negative/Black) Polarity - Banana Jack Style */
+.connection-point.lo {
+  background: radial-gradient(circle at 30% 30%, #4b5563 0%, #1f2937 80%, #111827 100%);
+  border-color: #374151;
+}
+
+.connection-point.lo::after {
+  content: 'LO';
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #6b7280;
+}
+
+.connection-point.lo:hover {
+  box-shadow:
+    0 0 12px rgba(107, 114, 128, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.connection-point.lo.active {
+  transform: scale(1.4);
+  box-shadow:
+    0 0 20px rgba(107, 114, 128, 0.9),
+    0 0 40px rgba(55, 65, 81, 0.5);
+  animation: pulseLo 1s ease-in-out infinite;
+}
+
+.connection-point.lo.matching {
+  box-shadow: 0 0 20px rgba(107, 114, 128, 0.9);
+  animation: pulseLo 0.5s ease-in-out infinite;
+}
+
+@keyframes pulseLo {
+
+  0%,
+  100% {
+    transform: scale(1.3);
+    box-shadow: 0 0 12px rgba(107, 114, 128, 0.6);
+  }
+
+  50% {
+    transform: scale(1.5);
+    box-shadow: 0 0 20px rgba(107, 114, 128, 1);
+  }
+}
+
+/* Output type styling */
+.connection-point.output {
+  cursor: pointer;
+}
+
+/* Input type styling - show arrow pointing inward */
+.connection-point.input {
+  cursor: pointer;
+}
+
+/* AUX HI (Orange) Polarity for Amps - Banana Jack Style */
+.connection-point.aux_hi {
+  background: radial-gradient(circle at 30% 30%, #fbbf24 0%, #d97706 80%, #92400e 100%);
+  border-color: #92400e;
+}
+
+.connection-point.aux_hi::after {
+  content: 'A+';
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #f59e0b;
+}
+
+.connection-point.aux_hi:hover {
+  box-shadow:
+    0 0 15px rgba(245, 158, 11, 0.7),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.connection-point.aux_hi.active {
+  transform: scale(1.4);
+  box-shadow:
+    0 0 20px rgba(245, 158, 11, 0.9),
+    0 0 40px rgba(245, 158, 11, 0.5);
+  animation: pulseAux 1s ease-in-out infinite;
+}
+
+/* AUX LO (Dark Blue) Polarity for Amps */
+.connection-point.aux_lo {
+  background: radial-gradient(circle at 30% 30%, #3b82f6 0%, #1d4ed8 80%, #1e3a8a 100%);
+  border-color: #1e3a8a;
+}
+
+.connection-point.aux_lo::after {
+  content: 'A-';
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #3b82f6;
+}
+
+.connection-point.aux_lo:hover {
+  box-shadow:
+    0 0 15px rgba(59, 130, 246, 0.7),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.connection-point.aux_lo.active {
+  transform: scale(1.4);
+  box-shadow:
+    0 0 20px rgba(59, 130, 246, 0.9),
+    0 0 40px rgba(59, 130, 246, 0.5);
+  animation: pulseAux 1s ease-in-out infinite;
+}
+
+@keyframes pulseAux {
+
+  0%,
+  100% {
+    transform: scale(1.3);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.7);
+  }
+
+  50% {
+    transform: scale(1.5);
+    box-shadow: 0 0 25px rgba(245, 158, 11, 1);
+  }
+}
+
+/* --- Wire Styles --- */
+.wire {
+  stroke: var(--primary-color);
+  stroke-width: 3;
+  fill: none;
+}
+
+.wire.active {
+  stroke: var(--success-color);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    stroke-width: 3;
+  }
+
+  50% {
+    stroke-width: 5;
+  }
+}

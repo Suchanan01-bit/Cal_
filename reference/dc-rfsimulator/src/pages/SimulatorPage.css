@@ -1,0 +1,18 @@
+/* ============================================
+   SimulatorPage.css - Simulator Page Styles
+   ============================================ */
+
+.simulator-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--light-bg);
+}
+
+/* Canvas Area */
+.canvas-area {
+    flex: 1;
+    position: relative;
+    background: var(--light-bg);
+    overflow: hidden;
+}

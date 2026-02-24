@@ -1,0 +1,421 @@
+/* ============================================
+   AnalogMultimeter.css - Simpson 260 Styles
+   Realistic Analog VOM Design
+   ============================================ */
+
+.simpson260-device {
+    width: 360px;
+    background: linear-gradient(145deg, #1f1f1f, #0a0a0a);
+    border-radius: 16px;
+    box-shadow:
+        0 15px 50px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border: 4px solid #333;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
+
+/* Delete Button */
+.simpson-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #e74c3c;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 20;
+}
+
+.simpson-delete:hover {
+    background: #c0392b;
+}
+
+/* Connection Status */
+.simpson-connection-status {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 20;
+}
+
+.simpson-connection-status .status-led {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #444;
+    border: 2px solid #222;
+}
+
+.simpson-connection-status .status-led.connected {
+    background: #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+}
+
+/* ============================================
+   METER FACE
+   ============================================ */
+.simpson-meter-face {
+    background: linear-gradient(to bottom, #FFFEF0, #F5F5DC);
+    margin: 12px;
+    border-radius: 8px 8px 0 0;
+    padding: 10px;
+    border: 4px solid #333;
+    border-bottom: 2px solid #333;
+    box-shadow:
+        inset 0 2px 15px rgba(0, 0, 0, 0.15),
+        0 3px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+}
+
+.meter-scales {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.scale-label {
+    font-size: 8px;
+    font-weight: bold;
+    text-anchor: middle;
+}
+
+.scale-label.ohms {
+    fill: #8B0000;
+}
+
+.scale-label.dc {
+    fill: #000;
+}
+
+.scale-label.ac {
+    fill: #0000AA;
+}
+
+.scale-label.small {
+    font-size: 6px;
+    fill: #666;
+}
+
+.scale-title {
+    font-size: 10px;
+    font-weight: bold;
+    text-anchor: middle;
+}
+
+.scale-title.ohms {
+    fill: #8B0000;
+}
+
+.scale-title.dc {
+    fill: #000;
+}
+
+.scale-title.ac {
+    fill: #0000AA;
+}
+
+/* Animated Needle */
+.meter-needle {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    width: 4px;
+    height: 100px;
+    transform-origin: bottom center;
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 10;
+    margin-left: -2px;
+}
+
+.needle-body {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+    border-bottom: 95px solid #cc0000;
+    filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+.needle-pivot {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #888, #222);
+    border-radius: 50%;
+    border: 3px solid #111;
+    z-index: 11;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Simpson Logo */
+.simpson-logo {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Times New Roman', serif;
+    font-size: 20px;
+    font-weight: bold;
+    font-style: italic;
+    color: #333;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================
+   CONTROL PANEL
+   ============================================ */
+.simpson-control-panel {
+    background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+/* Reading Display */
+.reading-display {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #000;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 2px solid #333;
+    min-width: 100px;
+}
+
+.reading-mode {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.reading-value {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+/* Main Rotary Knob Section */
+.main-knob-section {
+    position: relative;
+    width: 140px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.knob-labels {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    pointer-events: none;
+}
+
+.knob-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-size: 6px;
+    font-weight: bold;
+    color: #888;
+    transform-origin: center center;
+    white-space: nowrap;
+}
+
+.knob-label.active {
+    color: #FFD700;
+}
+
+.main-rotary-knob {
+    width: 80px;
+    height: 80px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.knob-body {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #444, #1a1a1a);
+    border: 4px solid #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 6px 15px rgba(0, 0, 0, 0.6),
+        inset 0 2px 3px rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.knob-pointer {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 4px;
+    height: 22px;
+    background: linear-gradient(to bottom, #fff, #ccc);
+    border-radius: 2px;
+    transform-origin: 50% 32px;
+    margin-left: -2px;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+.knob-hint {
+    font-size: 8px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Zero Adjust Section */
+.zero-adjust-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.zero-label {
+    font-size: 8px;
+    color: #FFD700;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.zero-knob {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.zero-knob-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #333, #1a1a1a);
+    border: 3px solid #111;
+    position: relative;
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.zero-pointer {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    width: 2px;
+    height: 12px;
+    background: #fff;
+    border-radius: 1px;
+    transform-origin: 50% 15px;
+    margin-left: -1px;
+}
+
+/* ============================================
+   TERMINAL PANEL
+   ============================================ */
+.simpson-terminal-panel {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 10px;
+    background: linear-gradient(to bottom, #0f0f0f, #000);
+    border-top: 2px solid #333;
+}
+
+.terminal-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    position: relative;
+}
+
+.terminal-title {
+    font-size: 7px;
+    color: #aaa;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.terminal-subtitle {
+    font-size: 6px;
+    color: #666;
+}
+
+/* Banana Jack Styling */
+.banana-jack {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        inset 0 2px 4px rgba(255, 255, 255, 0.15);
+}
+
+.banana-jack.large {
+    width: 32px;
+    height: 32px;
+    border: 4px solid #444;
+}
+
+.banana-jack.medium {
+    width: 26px;
+    height: 26px;
+    border: 3px solid #444;
+}
+
+.banana-jack.red {
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #dc2626 70%, #7f1d1d);
+    border-color: #5c0a0a;
+}
+
+.banana-jack.black {
+    background: radial-gradient(circle at 30% 30%, #555, #222 70%, #000);
+    border-color: #000;
+}
+
+.banana-jack::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #0a0a0a;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* Model Badge */
+.model-badge {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #888;
+    font-family: 'Arial Black', sans-serif;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}

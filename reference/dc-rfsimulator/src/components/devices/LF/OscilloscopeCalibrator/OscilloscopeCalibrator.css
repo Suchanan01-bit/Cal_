@@ -1,0 +1,610 @@
+/**
+ * OscilloscopeCalibrator.css
+ * Styles for Precision Oscilloscope Calibrator
+ */
+
+/* Main Device Container */
+.osc-calibrator-device {
+    width: 520px;
+    background: linear-gradient(145deg, #2a2a35, #1a1a25);
+    border: 2px solid #ffcc00;
+    border-radius: 12px;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+.osc-calibrator-device.power-off {
+    filter: brightness(0.5);
+    border-color: #666;
+}
+
+/* Device Header */
+.osc-calibrator-device .device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #ffcc00, #ff9900);
+    padding: 8px 15px;
+    border-bottom: 2px solid #cc9900;
+}
+
+.osc-calibrator-device .device-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.osc-calibrator-device .cal-logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1a1a25;
+    letter-spacing: 3px;
+}
+
+.osc-calibrator-device .device-model {
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+}
+
+.osc-calibrator-device .delete-btn {
+    background: #cc0000;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s;
+}
+
+.osc-calibrator-device .delete-btn:hover {
+    background: #ff4444;
+    transform: scale(1.1);
+}
+
+/* Device Body */
+.osc-calibrator-device .device-body {
+    padding: 12px;
+}
+
+/* LCD Display */
+.cal-display {
+    margin-bottom: 12px;
+}
+
+.cal-lcd {
+    background: linear-gradient(145deg, #1a1a2e, #0a0a1e);
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.cal-lcd-inner {
+    background: #001a33;
+    border-radius: 5px;
+    padding: 12px 15px;
+}
+
+.waveform-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #003366;
+}
+
+.waveform-icon {
+    font-size: 24px;
+    color: #00ffaa;
+}
+
+.waveform-name {
+    font-size: 14px;
+    color: #00ccff;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.cal-main-display {
+    margin-bottom: 8px;
+}
+
+.display-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+.display-row .label {
+    font-size: 12px;
+    color: #00aaff;
+    letter-spacing: 1px;
+}
+
+.display-row .value {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 22px;
+    color: #00ff88;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.display-row .value.editing {
+    color: #ffff00;
+    animation: blink-cursor 0.5s infinite;
+}
+
+@keyframes blink-cursor {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0.5;
+    }
+}
+
+.display-row.small .value {
+    font-size: 14px;
+}
+
+.cal-status-row {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid #003366;
+}
+
+.status-item {
+    font-size: 10px;
+    color: #666;
+    padding: 2px 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.status-item.active {
+    color: #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+}
+
+/* Control Panel */
+.cal-controls {
+    display: flex;
+    gap: 12px;
+}
+
+/* Output Section */
+.cal-output-section {
+    flex: 0 0 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.output-connector {
+    text-align: center;
+}
+
+.connector-label {
+    font-size: 8px;
+    color: #888;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+}
+
+.bnc-connector {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bnc-connector.small {
+    width: 30px;
+    height: 30px;
+}
+
+.bnc-body {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(145deg, #555, #333);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #666;
+    transition: all 0.3s;
+}
+
+.bnc-connector.small .bnc-body {
+    width: 25px;
+    height: 25px;
+}
+
+.bnc-body.active {
+    border-color: #ffcc00;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+}
+
+.bnc-center {
+    width: 10px;
+    height: 10px;
+    background: #888;
+    border-radius: 50%;
+    position: relative;
+}
+
+.bnc-connector.small .bnc-center {
+    width: 7px;
+    height: 7px;
+}
+
+.marker-btn {
+    padding: 5px 10px;
+    background: linear-gradient(145deg, #333, #222);
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #888;
+    font-size: 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.marker-btn.active {
+    background: linear-gradient(145deg, #664400, #442200);
+    border-color: #ffcc00;
+    color: #ffcc00;
+}
+
+.marker-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Main Controls */
+.cal-main-controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-section {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.section-label {
+    font-size: 9px;
+    color: #888;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.waveform-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.wf-btn {
+    flex: 1;
+    padding: 6px 4px;
+    background: linear-gradient(145deg, #333, #222);
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #888;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wf-btn.selected {
+    background: linear-gradient(145deg, #004466, #003355);
+    border-color: #00ccff;
+    color: #00ccff;
+}
+
+.wf-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-bottom: 5px;
+}
+
+.preset-btn {
+    flex: 1;
+    min-width: 35px;
+    padding: 4px;
+    background: linear-gradient(145deg, #2a2a3a, #1a1a2a);
+    border: 1px solid #3a3a4a;
+    border-radius: 3px;
+    color: #888;
+    font-size: 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.preset-btn.selected {
+    background: linear-gradient(145deg, #006633, #004422);
+    border-color: #00ff88;
+    color: #00ff88;
+}
+
+.preset-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.adjust-row {
+    display: flex;
+    gap: 5px;
+}
+
+.adjust-row button {
+    flex: 1;
+    padding: 5px;
+    background: linear-gradient(145deg, #3a3a4a, #2a2a3a);
+    border: 1px solid #4a4a5a;
+    border-radius: 3px;
+    color: #00aaff;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.adjust-row button:hover:not(:disabled) {
+    background: linear-gradient(145deg, #4a4a5a, #3a3a4a);
+}
+
+.adjust-row button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.duty-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.duty-control button {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(145deg, #3a3a4a, #2a2a3a);
+    border: 1px solid #4a4a5a;
+    border-radius: 4px;
+    color: #00aaff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.duty-control button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.duty-value {
+    min-width: 50px;
+    text-align: center;
+    font-size: 14px;
+    color: #00ff88;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 5px;
+    border-radius: 3px;
+}
+
+/* Power Section */
+.cal-power-section {
+    flex: 0 0 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.impedance-section {
+    width: 100%;
+    text-align: center;
+}
+
+.impedance-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.imp-btn {
+    flex: 1;
+    padding: 5px;
+    background: linear-gradient(145deg, #333, #222);
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: #888;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.imp-btn.selected {
+    background: linear-gradient(145deg, #664400, #442200);
+    border-color: #ffcc00;
+    color: #ffcc00;
+}
+
+.imp-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Mini Keypad */
+.mini-keypad {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.keypad-row {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 2px;
+}
+
+.keypad-row button {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(145deg, #444, #333);
+    border: 1px solid #555;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.keypad-row button:hover {
+    background: linear-gradient(145deg, #555, #444);
+}
+
+.enter-btn {
+    width: 100%;
+    padding: 5px;
+    background: linear-gradient(145deg, #006633, #004422);
+    border: 1px solid #00ff88;
+    border-radius: 3px;
+    color: #00ff88;
+    font-size: 10px;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+/* Output Button */
+.output-btn {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(145deg, #333, #222);
+    border: 2px solid #444;
+    border-radius: 6px;
+    color: #888;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.output-btn.active {
+    background: linear-gradient(145deg, #006600, #004400);
+    border-color: #00ff00;
+    color: #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.output-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Power Button */
+.power-button-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-top: auto;
+}
+
+.power-label {
+    font-size: 9px;
+    color: #666;
+}
+
+.power-btn {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(145deg, #333, #1a1a1a);
+    border: 2px solid #444;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.power-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid #666;
+    border-radius: 50%;
+    border-top-color: transparent;
+}
+
+.power-btn::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 8px;
+    background: #666;
+    border-radius: 1px;
+}
+
+.power-btn.power-on {
+    background: linear-gradient(145deg, #0a4a0a, #063006);
+    border-color: #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.power-btn.power-on::before {
+    border-color: #00ff00;
+    border-top-color: transparent;
+}
+
+.power-btn.power-on::after {
+    background: #00ff00;
+}
+
+/* Connection Indicator */
+.osc-calibrator-device .connection-indicator {
+    position: absolute;
+    top: 10px;
+    right: 45px;
+}
+
+.osc-calibrator-device .status-led {
+    width: 8px;
+    height: 8px;
+    background: #333;
+    border-radius: 50%;
+    border: 1px solid #444;
+}
+
+.osc-calibrator-device .status-led.connected {
+    background: #00ff88;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}

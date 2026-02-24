@@ -1,0 +1,137 @@
+/* ============================================
+   Toolbar.css - Toolbar Styles
+   ============================================ */
+
+.toolbar {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+
+.toolbar .btn {
+    padding: 10px 16px;
+    font-size: 12px;
+}
+
+.toolbar .btn-secondary {
+    background: #4b5563;
+}
+
+.toolbar .btn-secondary:hover {
+    background: #6b7280;
+}
+
+/* Uncertainty Mode Button */
+.toolbar .btn-uncertainty {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.toolbar .btn-uncertainty:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    transform: scale(1.05);
+}
+
+.toolbar .btn-uncertainty.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: #34d399;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    animation: uncertaintyPulse 2s infinite;
+}
+
+@keyframes uncertaintyPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+    }
+}
+
+/* --- Advanced Settings Dropdown --- */
+.settings-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-advanced {
+    background: linear-gradient(135deg, #2c3e50, #4ca1af);
+    color: white;
+    border: 1px solid #fff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.btn-advanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.settings-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 250px;
+    background: rgba(30, 30, 40, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 200;
+    
+    /* Animation State */
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.settings-dropdown.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.settings-group-title {
+    color: #ffd700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: #e0e0e0;
+    font-size: 13px;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.setting-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.setting-checkbox {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    accent-color: #00ff00;
+    cursor: pointer;
+}

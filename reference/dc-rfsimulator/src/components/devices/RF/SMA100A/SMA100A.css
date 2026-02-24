@@ -1,0 +1,731 @@
+/* ============================================
+   SMA100A.CSS - R&S SMA100A Signal Generator
+   Realistic UI Layout matching reference image
+   ============================================ */
+
+/* --- Main Device Container --- */
+.sma-device {
+    width: 950px;
+    background: linear-gradient(to bottom, #c5d5e8, #a8bcd4);
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 3px solid #7a8fa8;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- Top Bar (Brand & Model) --- */
+.sma-top-bar {
+    background: linear-gradient(to bottom, #2b4a7c, #1e3a5f);
+    padding: 5px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #1a2d4a;
+}
+
+.sma-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sma-brand-logo {
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 1px;
+}
+
+.sma-brand-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+
+.sma-model-info {
+    font-size: 11px;
+    color: #a0c0e0;
+}
+
+.sma-serial {
+    font-size: 10px;
+    color: #8ab0d0;
+    font-family: monospace;
+}
+
+/* --- Main Body Container --- */
+.sma-body {
+    display: flex;
+    padding: 10px;
+    gap: 8px;
+    background: linear-gradient(to bottom, #b8c8dc, #a0b4cc);
+}
+
+/* ============================================
+   ZONE 1: System & Power (Left Column)
+   ============================================ */
+.sma-zone1 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 5px;
+    width: 55px;
+    min-height: 220px;
+}
+
+.sma-preset-btn {
+    background: linear-gradient(to bottom, #f97316, #c2410c);
+    border: 2px solid #9a3412;
+    border-radius: 4px;
+    padding: 8px 4px;
+    font-size: 9px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sma-preset-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.sma-system-btn {
+    background: linear-gradient(to bottom, #e8e8e8, #c8c8c8);
+    border: 2px solid #a0a0a0;
+    border-radius: 4px;
+    padding: 8px 4px;
+    font-size: 8px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sma-system-btn:active {
+    transform: translateY(1px);
+}
+
+.sma-help-btn {
+    background: linear-gradient(to bottom, #f0d040, #d0a820);
+    border: 2px solid #a08010;
+    border-radius: 4px;
+    padding: 8px 4px;
+    font-size: 9px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sma-power-btn {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+    border: 3px solid #444;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: auto;
+    position: relative;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+
+.sma-power-btn::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border: 2px solid #666;
+    border-radius: 50%;
+    border-top-color: transparent;
+}
+
+.sma-power-btn.on {
+    box-shadow: 0 0 10px #4cd137, 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.sma-power-btn.on::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #4cd137;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #4cd137;
+}
+
+/* ============================================
+   ZONE 2: Display (LCD Screen)
+   ============================================ */
+.sma-zone2 {
+    flex: 0 0 300px;
+}
+
+.sma-screen-frame {
+    background: #1a1a1a;
+    border: 3px solid #0a0a0a;
+    border-radius: 6px;
+    padding: 4px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.sma-screen {
+    background: linear-gradient(135deg, #001830, #002545);
+    border-radius: 3px;
+    padding: 10px;
+    min-height: 180px;
+    color: white;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    position: relative;
+}
+
+/* Screen Header */
+.sma-screen-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #60a0d0;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #204060;
+}
+
+/* Frequency Display */
+.sma-freq-display {
+    background: rgba(0, 40, 80, 0.5);
+    border: 1px solid #305080;
+    border-radius: 3px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sma-freq-display:hover {
+    background: rgba(0, 60, 100, 0.6);
+}
+
+.sma-freq-label {
+    font-size: 9px;
+    color: #6090c0;
+    margin-bottom: 2px;
+}
+
+.sma-freq-value {
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    color: #00ff00;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+    letter-spacing: 1px;
+}
+
+.sma-freq-unit {
+    font-size: 14px;
+    color: #00cc00;
+    margin-left: 5px;
+}
+
+/* Level Display */
+.sma-level-display {
+    background: rgba(0, 40, 80, 0.5);
+    border: 1px solid #305080;
+    border-radius: 3px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sma-level-display:hover {
+    background: rgba(0, 60, 100, 0.6);
+}
+
+.sma-level-label {
+    font-size: 9px;
+    color: #6090c0;
+    margin-bottom: 2px;
+}
+
+.sma-level-value {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    color: #00ff00;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+.sma-level-unit {
+    font-size: 12px;
+    color: #00cc00;
+    margin-left: 5px;
+}
+
+/* Status Row */
+.sma-status-row {
+    display: flex;
+    gap: 8px;
+    font-size: 8px;
+    flex-wrap: wrap;
+}
+
+.sma-status-item {
+    padding: 2px 6px;
+    background: rgba(0, 60, 100, 0.5);
+    border: 1px solid #406080;
+    border-radius: 2px;
+    color: #80c0ff;
+}
+
+.sma-status-item.active {
+    background: rgba(0, 150, 0, 0.3);
+    border-color: #00aa00;
+    color: #00ff00;
+}
+
+.sma-status-item.warning {
+    background: rgba(150, 100, 0, 0.3);
+    border-color: #aa8800;
+    color: #ffcc00;
+}
+
+/* ============================================
+   ZONE 3: Function Keys
+   ============================================ */
+.sma-zone3 {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 95px;
+}
+
+.sma-func-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+}
+
+.sma-func-btn {
+    background: linear-gradient(to bottom, #e0e0e0, #c0c0c0);
+    border: 2px solid #909090;
+    border-radius: 3px;
+    padding: 8px 2px;
+    font-size: 7px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    line-height: 1.2;
+}
+
+.sma-func-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.sma-func-btn.highlight {
+    background: linear-gradient(to bottom, #f97316, #c2410c);
+    border-color: #9a3412;
+    color: white;
+}
+
+.sma-func-btn.rf-on.active {
+    background: linear-gradient(to bottom, #50c050, #30a030);
+    border-color: #208020;
+    color: white;
+}
+
+.sma-func-btn.rf-on.active::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 5px;
+    height: 5px;
+    background: #00ff00;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #00ff00;
+}
+
+/* ============================================
+   ZONE 4: Keypad & Units
+   ============================================ */
+.sma-zone4 {
+    display: flex;
+    gap: 5px;
+}
+
+/* Number Keypad */
+.sma-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    width: 105px;
+}
+
+.sma-key {
+    background: linear-gradient(to bottom, #f5f5f5, #d5d5d5);
+    border: 2px solid #a0a0a0;
+    border-radius: 3px;
+    padding: 8px 2px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sma-key:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to bottom, #e0e0e0, #c0c0c0);
+}
+
+.sma-key.sign {
+    font-size: 11px;
+}
+
+/* Unit Buttons */
+.sma-units {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 58px;
+}
+
+.sma-unit-btn {
+    background: linear-gradient(to bottom, #e8e8e8, #c8c8c8);
+    border: 2px solid #a0a0a0;
+    border-radius: 3px;
+    padding: 6px 2px;
+    font-size: 7px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    line-height: 1.2;
+}
+
+.sma-unit-btn:active {
+    transform: translateY(1px);
+}
+
+.sma-unit-btn .sub {
+    font-size: 6px;
+    color: #666;
+    display: block;
+}
+
+/* ============================================
+   ZONE 5: Navigation & Control
+   ============================================ */
+.sma-zone5 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 95px;
+}
+
+/* Main Knob */
+.sma-knob {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, #f0f0f0, #b0b0b0);
+    border: 3px solid #808080;
+    border-radius: 50%;
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    position: relative;
+}
+
+.sma-knob::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 12px;
+    background: #333;
+    border-radius: 2px;
+}
+
+/* Navigation Buttons */
+.sma-nav-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    width: 100%;
+}
+
+.sma-nav-btn {
+    background: linear-gradient(to bottom, #e0e0e0, #c0c0c0);
+    border: 2px solid #909090;
+    border-radius: 3px;
+    padding: 6px 2px;
+    font-size: 6px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    line-height: 1.2;
+}
+
+.sma-nav-btn:active {
+    transform: translateY(1px);
+}
+
+/* Arrow Keys */
+.sma-arrows {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2px;
+    width: 72px;
+    height: 72px;
+}
+
+.sma-arrow-btn {
+    background: linear-gradient(to bottom, #d0d0d0, #b0b0b0);
+    border: 2px solid #909090;
+    border-radius: 3px;
+    font-size: 10px;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sma-arrow-btn:active {
+    transform: translateY(1px);
+}
+
+.sma-arrow-btn.up {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.sma-arrow-btn.down {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.sma-arrow-btn.left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.sma-arrow-btn.right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.sma-arrow-btn.center {
+    grid-column: 2;
+    grid-row: 2;
+    background: linear-gradient(to bottom, #f97316, #c2410c);
+    color: white;
+    font-size: 6px;
+    font-weight: bold;
+}
+
+/* ============================================
+   ZONE 6: Connectors (Right Side)
+   ============================================ */
+.sma-zone6 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 80px;
+    padding: 5px;
+    background: linear-gradient(to bottom, #a0b0c8, #8898b0);
+    border-radius: 4px;
+    border: 1px solid #7888a0;
+}
+
+.sma-connector-group {
+    text-align: center;
+}
+
+.sma-connector-label {
+    font-size: 6px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.sma-bnc {
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #e0e0e0 40%, #a0a0a0 60%, #808080 100%);
+    border: 2px solid #606060;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.sma-bnc-inner {
+    width: 6px;
+    height: 6px;
+    background: #333;
+    border-radius: 50%;
+    position: relative;
+}
+
+.sma-bnc-inner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 2px;
+    background: gold;
+    border-radius: 50%;
+}
+
+/* Sensor Port */
+.sma-sensor-port {
+    width: 35px;
+    height: 14px;
+    background: #333;
+    border: 1px solid #222;
+    border-radius: 2px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 3px;
+}
+
+.sma-sensor-pin {
+    width: 3px;
+    height: 3px;
+    background: gold;
+    border-radius: 50%;
+}
+
+/* USB Port */
+.sma-usb {
+    width: 26px;
+    height: 10px;
+    background: #333;
+    border: 1px solid #222;
+    border-radius: 2px;
+    margin: 0 auto;
+}
+
+/* RF Output (Large Connector) */
+.sma-rf-output {
+    margin-top: auto;
+}
+
+.sma-rf-connector {
+    width: 36px;
+    height: 36px;
+    background: radial-gradient(circle, #f0f0f0 20%, #d0d0d0 40%, #a0a0a0 70%, #808080 100%);
+    border: 3px solid #505050;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.sma-rf-inner {
+    width: 12px;
+    height: 12px;
+    background: #222;
+    border-radius: 50%;
+    position: relative;
+}
+
+.sma-rf-inner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 4px;
+    background: gold;
+    border-radius: 50%;
+}
+
+.sma-rf-label {
+    font-size: 7px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-top: 2px;
+}
+
+/* ============================================
+   Delete Button (Top Right)
+   ============================================ */
+.sma-delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: #e74c3c;
+    border: none;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+.sma-delete-btn:hover {
+    background: #c0392b;
+}
+
+/* ============================================
+   POWER OFF STATE
+   ============================================ */
+.sma-device.power-off .sma-screen {
+    background: #0a1520;
+}
+
+.sma-device.power-off .sma-freq-value,
+.sma-device.power-off .sma-level-value,
+.sma-device.power-off .sma-freq-unit,
+.sma-device.power-off .sma-level-unit {
+    color: #1a2a3a;
+    text-shadow: none;
+}
+
+.sma-device.power-off .sma-screen-header,
+.sma-device.power-off .sma-freq-label,
+.sma-device.power-off .sma-level-label,
+.sma-device.power-off .sma-status-item {
+    color: #1a3050;
+    border-color: #1a3050;
+}

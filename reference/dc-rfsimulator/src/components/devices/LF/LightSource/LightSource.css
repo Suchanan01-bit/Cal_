@@ -1,0 +1,571 @@
+/**
+ * LightSource.css
+ * Styles for Fiber Optic Light Source Device
+ */
+
+/* Main Device Container */
+.lightsource-device {
+    width: 500px;
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    border: 2px solid #0f3460;
+    border-radius: 12px;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+.lightsource-device.power-off {
+    filter: brightness(0.6);
+}
+
+/* Device Header */
+.lightsource-device .device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #0a0a15, #1a1a2e);
+    padding: 8px 15px;
+    border-bottom: 1px solid #0f3460;
+}
+
+.lightsource-device .device-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.lightsource-device .lightsource-logo {
+    font-size: 16px;
+    font-weight: bold;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    letter-spacing: 2px;
+}
+
+.lightsource-device .device-model {
+    font-size: 14px;
+    color: #888;
+}
+
+.lightsource-device .delete-btn {
+    background: #ff4444;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s;
+}
+
+.lightsource-device .delete-btn:hover {
+    background: #ff6666;
+    transform: scale(1.1);
+}
+
+/* Device Body */
+.lightsource-device .device-body {
+    padding: 15px;
+}
+
+/* LCD Display */
+.lightsource-display {
+    margin-bottom: 15px;
+}
+
+.lightsource-lcd {
+    background: linear-gradient(145deg, #0a1628, #0d1f3c);
+    border: 2px solid #1a3a5c;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.lightsource-lcd-inner {
+    background: #001a00;
+    border-radius: 5px;
+    padding: 12px 15px;
+    min-height: 80px;
+}
+
+.lightsource-wavelength-display,
+.lightsource-power-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.lightsource-lcd .display-label {
+    font-size: 14px;
+    color: #00ff88;
+    font-weight: bold;
+    min-width: 20px;
+}
+
+.lightsource-lcd .display-value {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 28px;
+    color: #00ff88;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    letter-spacing: 2px;
+}
+
+.lightsource-lcd .display-unit {
+    font-size: 14px;
+    color: #00cc66;
+}
+
+.lightsource-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #003300;
+}
+
+.status-indicator {
+    font-size: 11px;
+    color: #555;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.status-indicator.active {
+    color: #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.status-indicator.active.laser {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.2);
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0.5;
+    }
+}
+
+.modulation-indicator {
+    font-size: 11px;
+    color: #00d4ff;
+    padding: 2px 8px;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 3px;
+}
+
+/* Control Panel */
+.lightsource-controls {
+    display: flex;
+    gap: 15px;
+}
+
+/* Optical Output Section */
+.lightsource-output-section {
+    flex: 0 0 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.optical-connector {
+    text-align: center;
+}
+
+.connector-label {
+    font-size: 9px;
+    color: #888;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.fc-connector {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.connector-body {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(145deg, #444, #222);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #666;
+    transition: all 0.3s;
+}
+
+.connector-body.laser-active {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.connector-ferrule {
+    width: 12px;
+    height: 12px;
+    background: #888;
+    border-radius: 50%;
+    position: relative;
+}
+
+.connector-type {
+    font-size: 10px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Laser Warning */
+.laser-warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background: rgba(255, 200, 0, 0.1);
+    border: 1px solid rgba(255, 200, 0, 0.3);
+    border-radius: 5px;
+    opacity: 0.5;
+    transition: all 0.3s;
+}
+
+.laser-warning.active {
+    opacity: 1;
+    background: rgba(255, 0, 0, 0.2);
+    border-color: rgba(255, 0, 0, 0.5);
+    animation: warning-pulse 1s infinite;
+}
+
+@keyframes warning-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+    }
+}
+
+.warning-symbol {
+    font-size: 16px;
+    color: #ffcc00;
+}
+
+.laser-warning.active .warning-symbol {
+    color: #ff4444;
+}
+
+.warning-text {
+    font-size: 8px;
+    color: #ffcc00;
+    letter-spacing: 0.5px;
+}
+
+.laser-warning.active .warning-text {
+    color: #ff4444;
+}
+
+/* Wavelength Section */
+.lightsource-wavelength-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section-title {
+    font-size: 10px;
+    color: #888;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.wavelength-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+}
+
+.wavelength-btn {
+    padding: 8px 12px;
+    background: linear-gradient(145deg, #2a2a4a, #1a1a3a);
+    border: 1px solid #3a3a6a;
+    border-radius: 5px;
+    color: #aaa;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wavelength-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+    color: #00d4ff;
+}
+
+.wavelength-btn.selected {
+    background: linear-gradient(145deg, #0066aa, #004488);
+    border-color: #00d4ff;
+    color: #00d4ff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.wavelength-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Modulation Buttons */
+.modulation-buttons {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.modulation-btn {
+    padding: 6px 10px;
+    background: linear-gradient(145deg, #2a2a4a, #1a1a3a);
+    border: 1px solid #3a3a6a;
+    border-radius: 4px;
+    color: #888;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modulation-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+    color: #00ff88;
+}
+
+.modulation-btn.selected {
+    background: linear-gradient(145deg, #006633, #004422);
+    border-color: #00ff88;
+    color: #00ff88;
+}
+
+.modulation-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Power Control Section */
+.lightsource-power-section {
+    flex: 0 0 110px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.power-adjust {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.adjust-btn {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+    border: 1px solid #4a4a6a;
+    border-radius: 5px;
+    color: #00d4ff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.adjust-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #4a4a6a, #3a3a5a);
+    transform: scale(1.05);
+}
+
+.adjust-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.power-value {
+    font-size: 11px;
+    color: #00ff88;
+    min-width: 55px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 5px;
+    border-radius: 3px;
+}
+
+/* Stabilized Button */
+.stab-btn {
+    width: 100%;
+    padding: 6px;
+    background: linear-gradient(145deg, #2a2a4a, #1a1a3a);
+    border: 1px solid #3a3a6a;
+    border-radius: 4px;
+    color: #888;
+    font-size: 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stab-btn.active {
+    background: linear-gradient(145deg, #006633, #004422);
+    border-color: #00ff88;
+    color: #00ff88;
+}
+
+.stab-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Output Button */
+.output-btn {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(145deg, #333, #222);
+    border: 2px solid #444;
+    border-radius: 6px;
+    color: #888;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.output-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #444, #333);
+}
+
+.output-btn.active {
+    background: linear-gradient(145deg, #aa0000, #880000);
+    border-color: #ff4444;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+    animation: output-pulse 1s infinite;
+}
+
+@keyframes output-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+    }
+}
+
+.output-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Power Button */
+.power-button-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.power-label {
+    font-size: 9px;
+    color: #666;
+}
+
+.power-btn {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(145deg, #333, #1a1a1a);
+    border: 2px solid #444;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.power-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid #666;
+    border-radius: 50%;
+    border-top-color: transparent;
+}
+
+.power-btn::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 8px;
+    background: #666;
+    border-radius: 1px;
+}
+
+.power-btn.power-on {
+    background: linear-gradient(145deg, #0a4a0a, #063006);
+    border-color: #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.power-btn.power-on::before {
+    border-color: #00ff00;
+    border-top-color: transparent;
+}
+
+.power-btn.power-on::after {
+    background: #00ff00;
+}
+
+/* Connection Indicator */
+.lightsource-device .connection-indicator {
+    position: absolute;
+    top: 10px;
+    right: 45px;
+}
+
+.lightsource-device .status-led {
+    width: 8px;
+    height: 8px;
+    background: #333;
+    border-radius: 50%;
+    border: 1px solid #444;
+}
+
+.lightsource-device .status-led.connected {
+    background: #00ff88;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}

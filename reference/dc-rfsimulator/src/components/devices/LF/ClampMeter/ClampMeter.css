@@ -1,0 +1,552 @@
+/* ============================================
+   ClampMeter.css - Fluke 376 Clamp Meter Styles
+   ============================================ */
+
+.clamp-meter-device {
+    width: 200px;
+    background: linear-gradient(145deg, #FFB800, #E5A500);
+    border-radius: 12px;
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border: 3px solid #CC9200;
+    overflow: visible;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
+
+/* Delete Button */
+.clamp-delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #e74c3c;
+    border: none;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 30;
+}
+
+.clamp-delete:hover {
+    background: #c0392b;
+}
+
+/* Connection Status */
+.clamp-connection-status {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 30;
+}
+
+.clamp-connection-status .status-led {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #666;
+}
+
+.clamp-connection-status .status-led.connected {
+    background: #00ff00;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+}
+
+/* ============================================
+   CLAMP JAW - Pincer Style (ปากคีบ)
+   ============================================ */
+.clamp-jaw-container {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Upper Jaw (เคลื่อนไหวได้) */
+.clamp-jaw-upper {
+    width: 90px;
+    height: 45px;
+    background: linear-gradient(to bottom, #E53935, #B71C1C);
+    border-radius: 60px 60px 0 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+    border: 3px solid #8B0000;
+    border-bottom: none;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.clamp-jaw-upper::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 8px;
+    background: linear-gradient(to bottom, #FFF, #CCC);
+    border-radius: 4px 4px 0 0;
+}
+
+.clamp-jaw-upper::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+/* When open - rotate upper jaw */
+.clamp-jaw-container.open .clamp-jaw-upper {
+    transform: translateX(-50%) translateY(-15px) rotate(-25deg);
+    transform-origin: bottom center;
+}
+
+/* Lower Jaw (คงที่) */
+.clamp-jaw-lower {
+    width: 80px;
+    height: 40px;
+    background: linear-gradient(to top, #E53935, #C62828);
+    border-radius: 0 0 50px 50px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    border: 3px solid #8B0000;
+    border-top: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.clamp-jaw-lower::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 8px;
+    background: linear-gradient(to top, #FFF, #CCC);
+    border-radius: 0 0 4px 4px;
+}
+
+.jaw-inner {
+    display: none;
+}
+
+.jaw-label {
+    position: absolute;
+    font-size: 7px;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.clamp-jaw-upper .jaw-label {
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.clamp-jaw-lower .jaw-label {
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Clamp Opening Area (Connection Point Zone) */
+.clamp-opening {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.clamp-jaw-container.open .clamp-opening {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: rgba(0, 255, 0, 0.5);
+}
+
+/* Trigger Button */
+.clamp-trigger {
+    position: absolute;
+    left: -25px;
+    top: 25px;
+    width: 30px;
+    height: 55px;
+    background: linear-gradient(145deg, #FFB800, #E5A500);
+    border-radius: 12px 0 0 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 14px;
+    border: 3px solid #CC9200;
+    border-right: none;
+    z-index: 15;
+    box-shadow: -3px 0 8px rgba(0, 0, 0, 0.3);
+    transition: background 0.2s;
+}
+
+.clamp-trigger:hover {
+    background: linear-gradient(145deg, #FFD000, #FFBA00);
+}
+
+.clamp-trigger:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   MAIN BODY
+   ============================================ */
+.clamp-body {
+    background: linear-gradient(to bottom, #3a3a3a, #2a2a2a);
+    margin: 0 10px 10px 10px;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+    border: 2px solid #222;
+}
+
+/* Header */
+.clamp-header {
+    background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #444;
+}
+
+.brand-fluke {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.model-number {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.model-desc {
+    font-size: 6px;
+    color: #888;
+    line-height: 1.2;
+}
+
+/* Function Labels */
+.function-labels {
+    padding: 5px 8px;
+    font-size: 7px;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 3px;
+}
+
+.func-label {
+    color: #999;
+    font-weight: bold;
+}
+
+.func-label.iflex {
+    color: #00BFFF;
+}
+
+.func-label.zero {
+    color: #FFD700;
+}
+
+.func-label.off {
+    color: #888;
+}
+
+/* Rotary Dial */
+.dial-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.rotary-dial {
+    width: 70px;
+    height: 70px;
+    cursor: pointer;
+}
+
+.dial-body {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #555, #333);
+    border: 4px solid #222;
+    position: relative;
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.5),
+        inset 0 2px 3px rgba(255, 255, 255, 0.1);
+}
+
+.dial-pointer {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 4px;
+    height: 18px;
+    background: #fff;
+    border-radius: 2px;
+    transform-origin: 50% 27px;
+    margin-left: -2px;
+}
+
+.dial-current {
+    font-size: 9px;
+    color: #FFD700;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+/* LCD Display */
+.clamp-display {
+    background: #C5D6C5;
+    margin: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 2px solid #333;
+}
+
+.display-indicators {
+    display: flex;
+    justify-content: space-between;
+    font-size: 7px;
+    margin-bottom: 5px;
+}
+
+.display-indicators .indicator {
+    color: #9AA;
+}
+
+.display-indicators .indicator.active {
+    color: #000;
+    font-weight: bold;
+}
+
+.display-main {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.display-value {
+    font-family: 'Courier New', monospace;
+    font-size: 28px;
+    font-weight: bold;
+    color: #000;
+}
+
+.display-unit {
+    font-size: 14px;
+    color: #333;
+}
+
+.display-range {
+    display: flex;
+    justify-content: space-between;
+    font-size: 7px;
+    color: #9AA;
+    margin-top: 5px;
+}
+
+.display-range .active {
+    color: #000;
+    font-weight: bold;
+}
+
+/* Button Row */
+.clamp-buttons {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px;
+    background: #222;
+}
+
+.clamp-btn {
+    padding: 6px 8px;
+    background: linear-gradient(to bottom, #333, #222);
+    border: 1px solid #111;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 7px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.clamp-btn:hover {
+    background: linear-gradient(to bottom, #444, #333);
+}
+
+.clamp-btn.active {
+    background: linear-gradient(to bottom, #FFD700, #CC9900);
+    color: #000;
+}
+
+.clamp-btn.backlight {
+    font-size: 12px;
+}
+
+/* Terminal Panel */
+.clamp-terminals {
+    background: #1a1a1a;
+    padding: 8px;
+    border-top: 1px solid #333;
+}
+
+.terminal-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.terminal-cat {
+    font-size: 6px;
+    color: #888;
+}
+
+.terminal-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.terminal-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    position: relative;
+}
+
+.terminal-label {
+    font-size: 8px;
+    color: #aaa;
+    font-weight: bold;
+}
+
+.banana-jack {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 3px solid #444;
+    position: relative;
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.1);
+}
+
+.banana-jack.red {
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #dc2626 70%, #991b1b);
+    border-color: #7f1d1d;
+}
+
+.banana-jack.black {
+    background: radial-gradient(circle at 30% 30%, #555, #222 70%, #000);
+    border-color: #000;
+}
+
+.banana-jack.gray {
+    background: radial-gradient(circle at 30% 30%, #888, #555 70%, #333);
+    border-color: #333;
+}
+
+.banana-jack::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    background: #111;
+    border-radius: 50%;
+}
+
+/* iFlex Connector */
+.iflex-connector {
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.iflex-port {
+    width: 30px;
+    height: 40px;
+    background: linear-gradient(to bottom, #444, #222);
+    border-radius: 0 8px 8px 0;
+    border: 2px solid #333;
+    border-left: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.iflex-port span {
+    font-size: 6px;
+    color: #00BFFF;
+    font-weight: bold;
+    writing-mode: vertical-rl;
+}
+
+.iflex-port.connected {
+    background: linear-gradient(to bottom, #00BFFF, #0080FF);
+}
+
+.iflex-port.connected span {
+    color: #fff;
+}
+
+/* Power Off State */
+.clamp-meter-device.power-off .display-value,
+.clamp-meter-device.power-off .display-unit {
+    color: #AAA;
+}
+
+.clamp-meter-device.power-off .display-indicators .indicator {
+    color: #AAA;
+}

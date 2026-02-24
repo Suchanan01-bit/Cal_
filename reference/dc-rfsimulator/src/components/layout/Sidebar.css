@@ -1,0 +1,106 @@
+/* ============================================
+   Sidebar.css - Sidebar Styles
+   ============================================ */
+
+.sidebar {
+    width: 360px;
+    background: var(--dark-bg);
+    color: white;
+    padding: 15px;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.sidebar-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.sidebar-subtitle {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 3px;
+}
+
+/* Category */
+.category {
+    background: var(--dark-secondary);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid var(--primary-color);
+}
+
+.category-title {
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding: 6px;
+    background: var(--primary-color);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.category.rf .category-title {
+    background: linear-gradient(135deg, var(--orange-500) 0%, var(--orange-700) 100%);
+}
+
+.category.lf .category-title {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+/* Component Item */
+.component {
+    background: rgba(249, 115, 22, 0.1);
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 6px;
+    cursor: move;
+    transition: all 0.2s ease;
+    border: 2px solid rgba(249, 115, 22, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+}
+
+.component:hover {
+    background: rgba(249, 115, 22, 0.2);
+    border-color: var(--orange-500);
+    transform: translateX(5px);
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+}
+
+.component.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.component-icon {
+    font-size: 28px;
+}
+
+.component-info {
+    flex: 1;
+}
+
+.component-name {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.component-desc {
+    font-size: 10px;
+    color: var(--text-light);
+    margin-top: 2px;
+}

@@ -1,0 +1,595 @@
+/* ============================================
+   U3606A.css - Keysight U3606B Styles
+   5½ Digit Multimeter + DC Power Supply
+   Matching reference image layout
+   ============================================ */
+
+.u3606a-device {
+    width: 680px;
+    background: linear-gradient(145deg, #c8c8c8, #a8a8a8);
+    border-radius: 12px;
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border: 4px solid #888;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
+
+/* Delete Button */
+.u3606a-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #e74c3c;
+    border: none;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+.u3606a-delete:hover {
+    background: #c0392b;
+}
+
+/* Connection Status */
+.u3606a-connection-status {
+    position: absolute;
+    top: 8px;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 8px;
+    color: #888;
+    z-index: 10;
+}
+
+.status-led {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #cc0000;
+}
+
+.status-led.connected {
+    background: #00cc00;
+    box-shadow: 0 0 6px rgba(0, 255, 0, 0.7);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.u3606a-header {
+    background: linear-gradient(to bottom, #4a4a4a, #2a2a2a);
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #f59e0b;
+}
+
+.header-left .brand-warning {
+    color: #f59e0b;
+    font-size: 9px;
+    font-weight: bold;
+}
+
+.header-center {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.keysight-logo {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.model-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.model-desc {
+    font-size: 9px;
+    color: #999;
+}
+
+.header-right .out-label {
+    color: #00ff00;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* ============================================
+   MAIN PANEL LAYOUT
+   ============================================ */
+.u3606a-main-panel {
+    display: flex;
+    background: linear-gradient(to bottom, #d0d0d0, #b0b0b0);
+    padding: 8px;
+    gap: 8px;
+}
+
+/* LEFT - Multimeter Section */
+.u3606a-multimeter-section {
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Source Terminals */
+.source-terminals {
+    background: #a0a0a0;
+    border-radius: 4px;
+    padding: 6px;
+    border: 1px solid #888;
+}
+
+.source-label {
+    display: block;
+    color: #f59e0b;
+    font-size: 8px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.source-jacks {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.terminal-group {
+    text-align: center;
+}
+
+.term-label {
+    font-size: 7px;
+    color: #333;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.jacks-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+}
+
+/* Dial Section */
+.dial-section {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+}
+
+.dial-labels-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.dial-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-size: 7px;
+    font-weight: bold;
+    color: #333;
+    transform-origin: center center;
+    white-space: nowrap;
+}
+
+.dial-label.active {
+    color: #f59e0b;
+    text-shadow: 0 0 3px rgba(245, 158, 11, 0.5);
+}
+
+.rotary-dial {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #555, #333);
+    border: 3px solid #222;
+    cursor: pointer;
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.dial-center {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.dial-pointer {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    width: 3px;
+    height: 16px;
+    background: #fff;
+    border-radius: 2px;
+    transform-origin: 50% 26px;
+    margin-left: -1.5px;
+}
+
+/* Input Terminals */
+.input-terminals {
+    background: #a0a0a0;
+    border-radius: 4px;
+    padding: 6px;
+    border: 1px solid #888;
+}
+
+.terminal-row.main-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.terminal-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.jack-label {
+    font-size: 6px;
+    color: #333;
+    text-align: center;
+}
+
+.multimeter-label {
+    text-align: center;
+    font-size: 8px;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Jack Styling */
+.jack {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.jack.small {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #555;
+}
+
+.jack.large {
+    width: 22px;
+    height: 22px;
+    border: 3px solid #555;
+}
+
+.jack.red {
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #dc2626 70%, #991b1b);
+    border-color: #7f1d1d;
+}
+
+.jack.black {
+    background: radial-gradient(circle at 30% 30%, #4a4a4a, #1f1f1f 70%, #0a0a0a);
+    border-color: #000;
+}
+
+.jack.green {
+    background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a 70%, #166534);
+    border-color: #14532d;
+}
+
+.jack.yellow {
+    background: radial-gradient(circle at 30% 30%, #fde047, #ca8a04 70%, #854d0e);
+    border-color: #713f12;
+}
+
+.jack.binding {
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   CENTER - DISPLAY SECTION
+   ============================================ */
+.u3606a-display-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Main Display */
+.main-display {
+    background: #1a1a1a;
+    border-radius: 4px;
+    padding: 8px 10px;
+    border: 2px solid #333;
+}
+
+.display-indicators {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.display-indicators .ind {
+    font-size: 9px;
+    color: #333;
+}
+
+.display-indicators .ind.active {
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.display-value.primary {
+    font-family: 'Courier New', monospace;
+    font-size: 32px;
+    font-weight: bold;
+    color: #00ff00;
+    text-shadow:
+        0 0 10px rgba(0, 255, 0, 0.8),
+        0 0 20px rgba(0, 255, 0, 0.4);
+    letter-spacing: 2px;
+}
+
+.display-value .unit {
+    font-size: 16px;
+    margin-left: 8px;
+}
+
+/* Secondary Display */
+.secondary-display {
+    background: #1a1a1a;
+    border-radius: 4px;
+    padding: 6px 10px;
+    border: 2px solid #333;
+    display: flex;
+    gap: 15px;
+}
+
+.dc-readings {
+    flex: 1;
+}
+
+.dc-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.dc-label {
+    font-size: 9px;
+    color: #666;
+    width: 20px;
+}
+
+.dc-value {
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ff00;
+    text-shadow: 0 0 6px rgba(0, 255, 0, 0.6);
+}
+
+.dc-unit {
+    font-size: 12px;
+    color: #00ff00;
+}
+
+.dc-controls-indicators {
+    display: flex;
+    gap: 10px;
+}
+
+.range-box,
+.source-box {
+    background: #0a0a0a;
+    padding: 4px 6px;
+    border-radius: 3px;
+    font-size: 7px;
+    color: #00ff00;
+}
+
+.range-title,
+.src-label {
+    display: block;
+    color: #666;
+    font-size: 6px;
+}
+
+.range-options {
+    display: flex;
+    gap: 4px;
+}
+
+.range-options .opt {
+    color: #444;
+}
+
+.range-options .opt.active {
+    color: #00ff00;
+}
+
+.src-val {
+    color: #00ff00;
+    font-size: 7px;
+}
+
+/* ============================================
+   BUTTON SECTION
+   ============================================ */
+.button-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.btn-row {
+    display: flex;
+    gap: 3px;
+}
+
+.fn-btn {
+    flex: 1;
+    padding: 6px 2px;
+    background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
+    border: 1px solid #2a2a2a;
+    border-radius: 3px;
+    color: #ddd;
+    font-size: 7px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.1s;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.fn-btn:hover {
+    background: linear-gradient(to bottom, #6a6a6a, #4a4a4a);
+}
+
+.fn-btn:active {
+    transform: translateY(1px);
+}
+
+.fn-btn.blue {
+    background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+    border-color: #1e40af;
+    color: #fff;
+}
+
+.fn-btn.yellow {
+    background: linear-gradient(to bottom, #f59e0b, #d97706);
+    border-color: #92400e;
+    color: #fff;
+}
+
+.fn-btn.power {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to bottom, #333, #1a1a1a);
+}
+
+.fn-btn .pwr-ind {
+    font-size: 6px;
+    color: #666;
+}
+
+.fn-btn .pwr-ind.on {
+    color: #00ff00;
+}
+
+.fn-btn.out-btn {
+    background: linear-gradient(to bottom, #333, #1a1a1a);
+    color: #00ff00;
+    line-height: 1.1;
+}
+
+/* ============================================
+   RIGHT - DC SUPPLY SECTION
+   ============================================ */
+.u3606a-supply-section {
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.supply-terminals {
+    background: #a0a0a0;
+    border-radius: 4px;
+    padding: 8px;
+    border: 1px solid #888;
+    text-align: center;
+}
+
+.supply-title {
+    font-size: 9px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.supply-jacks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.u3606a-footer {
+    background: #888;
+    padding: 4px;
+    text-align: center;
+}
+
+.footer-label {
+    font-size: 8px;
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+/* ============================================
+   POWER OFF STATE
+   ============================================ */
+.u3606a-device.power-off .display-value,
+.u3606a-device.power-off .dc-value,
+.u3606a-device.power-off .dc-unit,
+.u3606a-device.power-off .display-indicators .ind.active {
+    color: #1a2a1a;
+    text-shadow: none;
+}
+
+.u3606a-device.power-off .range-options .opt.active,
+.u3606a-device.power-off .src-val {
+    color: #1a2a1a;
+}

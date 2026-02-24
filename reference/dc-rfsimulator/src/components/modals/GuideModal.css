@@ -1,0 +1,140 @@
+/* ============================================
+   GuideModal.css - Guide Modal Styles
+   ============================================ */
+
+.guide-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.guide-content {
+    background: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.4s;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.guide-header {
+    background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 15px 15px 0 0;
+}
+
+.guide-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.guide-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.guide-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.guide-body {
+    padding: 30px;
+    overflow-y: auto;
+    max-height: calc(85vh - 80px);
+    color: #333;
+}
+
+.guide-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 5px solid #f97316;
+}
+
+.guide-section h3 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.guide-section ol,
+.guide-section ul {
+    margin-left: 20px;
+}
+
+.guide-section li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.guide-section kbd {
+    background: #333;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.guide-section .dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.guide-section .dot.red {
+    background: var(--danger-color);
+}
+
+.guide-section .dot.green {
+    background: var(--success-color);
+}

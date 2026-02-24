@@ -1,0 +1,383 @@
+/**
+ * FPC1500.css
+ * Styles for R&S FPC1500 Spectrum Analyzer
+ */
+
+.fpc-device {
+    position: absolute;
+    width: 900px;
+    height: 480px;
+    background: #f0f0f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    box-sizing: border-box;
+    font-family: 'Roboto', 'Arial', sans-serif;
+    user-select: none;
+    border: 1px solid #ccc;
+}
+
+.fpc-device.power-off .fpc-screen-content {
+    background: #111;
+    color: #333;
+}
+
+.fpc-device.power-off .fpc-trace,
+.fpc-device.power-off .fpc-grid {
+    display: none;
+}
+
+/* Delete button */
+.fpc-delete-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background: #ff4444;
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+.fpc-delete-btn:hover {
+    background: #cc0000;
+}
+
+/* --- Top Bar --- */
+.fpc-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.fpc-brand-logo {
+    color: #005697; /* R&S Blue */
+    font-weight: bold;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.fpc-model {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+/* --- Main Layout --- */
+.fpc-main {
+    display: flex;
+    flex: 1;
+    gap: 15px;
+}
+
+/* --- Left: Screen --- */
+.fpc-screen-area {
+    width: 65%;
+    display: flex;
+    position: relative;
+    background: #333;
+    border: 4px solid #ddd;
+    border-radius: 4px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.fpc-screen-content {
+    flex: 1;
+    background: #000;
+    position: relative;
+    padding: 10px;
+    color: #0f0;
+    display: flex;
+    flex-direction: column;
+}
+
+.fpc-screen-header {
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    font-size: 12px;
+    color: white;
+}
+
+.fpc-grid {
+    flex: 1;
+    border: 1px solid #444;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    position: relative;
+}
+
+.fpc-grid-line {
+    border-right: 1px dashed #333;
+    border-bottom: 1px dashed #333;
+}
+
+.fpc-trace-path {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Soft Keys (on screen right edge) */
+.fpc-soft-keys {
+    width: 60px;
+    background: #d0d0d0;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #999;
+}
+
+.fpc-soft-key {
+    flex: 1;
+    background: #e0e0e0;
+    border: 1px solid #bbb;
+    margin: 2px;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 1px 2px white, 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.fpc-soft-key:active {
+    background: #ccc;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* --- Right: Controls --- */
+.fpc-controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Function Keys Block */
+.fpc-func-block {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+
+.fpc-btn-rect {
+    height: 30px;
+    background: #f8f8f8;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+}
+
+.fpc-btn-rect.green {
+    background: #00a0a0;
+    color: white;
+    border-color: #008080;
+}
+
+.fpc-btn-rect:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+/* Keypad & Knob Area */
+.fpc-input-area {
+    display: flex;
+    gap: 10px;
+}
+
+.fpc-keypad {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.fpc-keypad-btn {
+    height: 35px;
+    background: #333;
+    color: white;
+    border: 1px solid #000;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2);
+}
+
+.fpc-keypad-btn:active {
+    background: #222;
+    transform: translateY(1px);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+.fpc-keypad-btn.dark {
+    background: #222;
+    color: #ddd;
+}
+
+/* Knob */
+.fpc-knob-area {
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.fpc-knob {
+    width: 60px;
+    height: 60px;
+    background: #ddd;
+    border-radius: 50%;
+    border: 2px solid #bbb;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2), inset 0 2px 5px white;
+    position: relative;
+    cursor: grab;
+}
+
+.fpc-knob::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #999;
+    border-radius: 50%;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Navigation Arrow Keys */
+.fpc-nav-keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    width: 90px;
+    margin-top: 10px;
+}
+
+.fpc-nav-btn {
+    width: 25px;
+    height: 25px;
+    background: #444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+/* --- Bottom: Connectors --- */
+.fpc-bottom-panel {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 10px;
+    gap: 30px;
+    border-top: 1px solid #ccc;
+}
+
+.fpc-power-btn {
+    width: 40px;
+    height: 40px;
+    background: #ececec;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+}
+
+.fpc-power-btn.on {
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+.fpc-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fpc-connector-label {
+    font-size: 10px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.fpc-n-type {
+    width: 36px;
+    height: 36px;
+    background: radial-gradient(circle, #e0e0e0 40%, #999 50%, #d0d0d0 60%);
+    border: 3px solid #b0b0b0;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.fpc-n-type::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #d4af37; /* Gold pin */
+    border-radius: 50%;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Ports */
+.fpc-ports {
+    display: flex;
+    gap: 10px;
+}
+
+.fpc-usb {
+    width: 30px;
+    height: 10px;
+    background: #333;
+    border: 1px solid #666;
+}
+
+.fpc-audio {
+    width: 10px;
+    height: 10px;
+    background: #111;
+    border-radius: 50%;
+    border: 1px solid #666;
+}

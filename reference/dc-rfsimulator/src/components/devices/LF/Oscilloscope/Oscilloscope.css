@@ -1,0 +1,466 @@
+/**
+ * Oscilloscope.css
+ * Styles for Digital Storage Oscilloscope
+ */
+
+/* Main Device Container */
+.oscilloscope-device {
+    width: 480px;
+    background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+    border: 2px solid #444;
+    border-radius: 12px;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+.oscilloscope-device.power-off {
+    filter: brightness(0.5);
+}
+
+/* Device Header */
+.oscilloscope-device .device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #222, #333);
+    padding: 8px 15px;
+    border-bottom: 1px solid #444;
+}
+
+.oscilloscope-device .device-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.oscilloscope-device .osc-logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00aaff;
+    text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+    letter-spacing: 2px;
+}
+
+.oscilloscope-device .device-model {
+    font-size: 14px;
+    color: #888;
+}
+
+.oscilloscope-device .delete-btn {
+    background: #ff4444;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s;
+}
+
+.oscilloscope-device .delete-btn:hover {
+    background: #ff6666;
+    transform: scale(1.1);
+}
+
+/* Device Body */
+.oscilloscope-device .device-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Display Screen */
+.osc-display {
+    position: relative;
+    background: #000;
+    border: 3px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.osc-screen {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* On-screen Overlay */
+.osc-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.osc-info-top,
+.osc-info-bottom {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+}
+
+.ch-indicator {
+    color: #555;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+}
+
+.ch-indicator.active {
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.timebase-info {
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.run-indicator {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.run-indicator.running {
+    color: #00ff00;
+    background: rgba(0, 100, 0, 0.5);
+}
+
+.run-indicator.stopped {
+    color: #ff4444;
+    background: rgba(100, 0, 0, 0.5);
+}
+
+.ch1-scale {
+    color: #00ff00;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.trigger-info {
+    color: #ffaa00;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* Measurements */
+.osc-measurements {
+    display: flex;
+    justify-content: space-around;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.measurement {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.meas-label {
+    font-size: 10px;
+    color: #888;
+}
+
+.meas-value {
+    font-size: 14px;
+    font-family: 'Consolas', monospace;
+    color: #00ff88;
+}
+
+/* Control Panel */
+.osc-controls {
+    display: flex;
+    gap: 12px;
+}
+
+/* Input Section */
+.osc-input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+.bnc-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.connector-label {
+    font-size: 10px;
+    color: #888;
+    font-weight: bold;
+}
+
+.bnc-body {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(145deg, #555, #333);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #666;
+}
+
+.bnc-center {
+    width: 10px;
+    height: 10px;
+    background: #888;
+    border-radius: 50%;
+    position: relative;
+}
+
+/* Main Controls */
+.osc-main-controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.group-label {
+    font-size: 9px;
+    color: #888;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.ch-btn {
+    width: 100%;
+    padding: 5px;
+    background: linear-gradient(145deg, #333, #222);
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #666;
+    font-size: 11px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    transition: all 0.2s;
+}
+
+.ch-btn.active {
+    background: linear-gradient(145deg, #006600, #004400);
+    border-color: #00ff00;
+    color: #00ff00;
+}
+
+.ch-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.adjust-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.adjust-controls button {
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(145deg, #444, #333);
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #00aaff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.adjust-controls button:hover:not(:disabled) {
+    background: linear-gradient(145deg, #555, #444);
+}
+
+.adjust-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.adjust-controls span {
+    min-width: 65px;
+    text-align: center;
+    font-size: 11px;
+    color: #00ff88;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px;
+    border-radius: 3px;
+}
+
+/* Trigger Buttons */
+.trigger-buttons {
+    display: flex;
+    gap: 3px;
+}
+
+.trig-btn {
+    flex: 1;
+    padding: 4px;
+    background: linear-gradient(145deg, #333, #222);
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: #888;
+    font-size: 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.trig-btn.active {
+    background: linear-gradient(145deg, #664400, #442200);
+    border-color: #ffaa00;
+    color: #ffaa00;
+}
+
+.trig-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Power Section */
+.osc-power-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+}
+
+.run-stop-btn {
+    padding: 10px 20px;
+    background: linear-gradient(145deg, #660000, #440000);
+    border: 2px solid #ff4444;
+    border-radius: 6px;
+    color: #ff4444;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.run-stop-btn.running {
+    background: linear-gradient(145deg, #006600, #004400);
+    border-color: #00ff00;
+    color: #00ff00;
+}
+
+.run-stop-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Power Button */
+.power-button-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.power-label {
+    font-size: 9px;
+    color: #666;
+}
+
+.power-btn {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(145deg, #333, #1a1a1a);
+    border: 2px solid #444;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.power-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid #666;
+    border-radius: 50%;
+    border-top-color: transparent;
+}
+
+.power-btn::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 8px;
+    background: #666;
+    border-radius: 1px;
+}
+
+.power-btn.power-on {
+    background: linear-gradient(145deg, #0a4a0a, #063006);
+    border-color: #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.power-btn.power-on::before {
+    border-color: #00ff00;
+    border-top-color: transparent;
+}
+
+.power-btn.power-on::after {
+    background: #00ff00;
+}
+
+/* Connection Indicator */
+.oscilloscope-device .connection-indicator {
+    position: absolute;
+    top: 10px;
+    right: 45px;
+}
+
+.oscilloscope-device .status-led {
+    width: 8px;
+    height: 8px;
+    background: #333;
+    border-radius: 50%;
+    border: 1px solid #444;
+}
+
+.oscilloscope-device .status-led.connected {
+    background: #00ff88;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}

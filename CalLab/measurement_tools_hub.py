@@ -87,6 +87,13 @@ try:
 except ImportError:
     FLUKE1620_AVAILABLE = False
 
+try:
+    from PyQt6.QtWebEngineWidgets import QWebEngineView
+    from PyQt6.QtCore import QUrl
+    WEBENGINE_AVAILABLE = True
+except ImportError:
+    WEBENGINE_AVAILABLE = False
+
 
 
 class InstrumentCard(QFrame):
@@ -704,6 +711,42 @@ class EnvironmentMonitorWidget(QWidget):
             print(f"Graph update error: {e}")
 
 
+class CalibrationSimulatorWidget(QWidget):
+    """Widget that embeds the DC-RF Calibration Simulator web app via QWebEngineView"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setup_ui()
+
+    def setup_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+
+        if WEBENGINE_AVAILABLE:
+            self.web_view = QWebEngineView()
+            # Resolve path to the built simulator dist/index.html
+            dist_path = Path(__file__).resolve().parent.parent / 'reference' / 'dc-rfsimulator' / 'dist' / 'index.html'
+            if dist_path.exists():
+                self.web_view.setUrl(QUrl.fromLocalFile(str(dist_path)))
+            else:
+                self.web_view.setHtml(
+                    '<html><body style="display:flex;align-items:center;justify-content:center;height:100vh;'
+                    'font-family:Segoe UI;color:#6b7280;"><h2>Simulator dist not found.<br>'
+                    f'Expected at: {dist_path}</h2></body></html>'
+                )
+            layout.addWidget(self.web_view)
+        else:
+            placeholder = QLabel(
+                "⚠️ PyQt6-WebEngine is not installed.\n\n"
+                "Install it with:\n  pip install PyQt6-WebEngine"
+            )
+            placeholder.setFont(QFont("Segoe UI", 14))
+            placeholder.setStyleSheet("color: #e67e22; padding: 60px;")
+            placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(placeholder)
+
+
 class MeasurementToolsHub(QMainWindow):
     """Main hub window for all measurement instruments"""
     
@@ -844,6 +887,10 @@ class MeasurementToolsHub(QMainWindow):
         self.env_monitor_widget.signal.data_updated.connect(self._update_env_navbar)
         self.stacked_widget.addWidget(self.env_monitor_widget)
         
+        # Calibration Simulator Widget (Index 15)
+        self.calibration_sim_widget = CalibrationSimulatorWidget()
+        self.stacked_widget.addWidget(self.calibration_sim_widget)
+        
         content_layout.addWidget(self.stacked_widget, 1)
         
         main_layout.addLayout(content_layout, 1)
@@ -938,6 +985,29 @@ class MeasurementToolsHub(QMainWindow):
         layout.addWidget(status_widget)
         
         layout.addSpacing(12)
+        
+        # Cal Sim badge (clickable)
+        cal_sim_btn = QPushButton("CAL SIM")
+        cal_sim_btn.setFont(QFont("Consolas", 10, QFont.Weight.Bold))
+        cal_sim_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        cal_sim_btn.setStyleSheet("""
+            QPushButton {
+                color: white;
+                background-color: rgba(255, 255, 255, 0.18);
+                border: 1px solid rgba(255, 255, 255, 0.35);
+                border-radius: 4px;
+                padding: 6px 14px;
+                letter-spacing: 1.5px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.35);
+                border: 1px solid rgba(255, 255, 255, 0.55);
+            }
+        """)
+        cal_sim_btn.clicked.connect(lambda: self.switch_page(15))
+        layout.addWidget(cal_sim_btn)
+        
+        layout.addSpacing(6)
         
         # Lab badge
         info_label = QLabel("CAL-LAB")
@@ -1094,6 +1164,17 @@ class MeasurementToolsHub(QMainWindow):
         layout.addWidget(env_label)
         layout.addWidget(env_container)
         self.category_widgets['environment'] = env_container
+        
+        # ========== CALIBRATION SIMULATOR CATEGORY ==========
+        sim_label, sim_container = self.create_collapsible_category(
+            "🧪 Calibration Simulator",
+            [
+                ("🧪 DC/RF Calibration Simulator", 15, True),
+            ]
+        )
+        layout.addWidget(sim_label)
+        layout.addWidget(sim_container)
+        self.category_widgets['simulator'] = sim_container
         
         layout.addStretch()
         
@@ -1448,7 +1529,8 @@ class MeasurementToolsHub(QMainWindow):
             "Rohde & Schwarz Power Meter - Precision Power Measurement (dBm/W)",
             "HP/Agilent 33120A Waveform Generator",
             "Agilent N1996A CSA Spectrum Analyzer - 100 kHz to 3 GHz",
-            "Fluke 1620A Environment Monitor - Real-time Temperature & Humidity"
+            "Fluke 1620A Environment Monitor - Real-time Temperature & Humidity",
+            "DC/RF Calibration Simulator - Interactive Calibration Training Platform"
         ]
         
         if index < len(pages):

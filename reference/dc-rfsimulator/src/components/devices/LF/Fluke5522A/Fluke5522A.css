@@ -1,0 +1,11 @@
+/* ============================================
+   FLUKE5522A.CSS - Fluke 5522A Calibrator
+   Uses same design as Fluke 5500A
+   ============================================ */
+
+/* Note: This file imports/uses the same styles as Fluke5500A 
+   The component uses the 'fluke-device' class which is styled in Fluke5500A.css
+   We import the shared styles here for consistency */
+
+/* Import shared Fluke styles - the component uses fluke-device class */
+@import '../Fluke5500A/Fluke5500A.css';

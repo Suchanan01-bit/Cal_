@@ -1,0 +1,428 @@
+/* ============================================
+   Multimeter.css - Digital Multimeter Styles
+   ============================================ */
+
+.multimeter-device {
+    width: 320px;
+    background: linear-gradient(145deg, #d5d5d5, #e8e8e8);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    border: 3px solid #999;
+    overflow: hidden;
+}
+
+/* Header */
+.meter-header {
+    background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+    color: white;
+    padding: 8px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.meter-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.meter-delete {
+    background: #e74c3c;
+    border: none;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.meter-delete:hover {
+    background: #c0392b;
+}
+
+/* Body */
+.meter-body {
+    padding: 15px;
+}
+
+/* Mode Selector */
+.meter-mode-selector {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.mode-btn {
+    flex: 1;
+    min-width: 45px;
+    background: linear-gradient(to bottom, #95a5a6, #7f8c8d);
+    border: 2px solid #5a6268;
+    border-radius: 6px;
+    padding: 6px 4px;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.mode-btn:hover {
+    background: linear-gradient(to bottom, #a0b0b0, #909090);
+}
+
+.mode-btn.active {
+    background: linear-gradient(to bottom, #f97316, #ea580c);
+    border-color: #c2410c;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+}
+
+/* Display */
+.meter-display {
+    background: #000;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    text-align: center;
+    padding: 20px 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+    border: 3px solid #333;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+}
+
+.meter-value {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.meter-unit {
+    font-size: 16px;
+    color: #0f0;
+    margin-top: 5px;
+}
+
+/* Power Button */
+.meter-power-btn {
+    width: 100%;
+    background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+    border: 3px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.meter-power-btn.on {
+    color: #4cd137;
+    box-shadow: 0 0 15px rgba(76, 209, 55, 0.4);
+}
+
+/* Power Off State */
+.multimeter-device.power-off .meter-display {
+    background: #0a0a0a;
+}
+
+.multimeter-device.power-off .meter-value,
+.multimeter-device.power-off .meter-unit {
+    color: #1a2a3a;
+    text-shadow: none;
+}
+
+/* ============================================
+   CONNECTION STATUS LED INDICATOR
+   ============================================ */
+.meter-connection-status {
+    position: absolute;
+    top: 8px;
+    right: 45px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 3px 8px;
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+
+.meter-status-led {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #333;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.meter-status-led.disconnected {
+    background: radial-gradient(circle at 30% 30%, #ff6666, #cc0000);
+    box-shadow:
+        0 0 5px rgba(255, 0, 0, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.meter-status-led.connected {
+    background: radial-gradient(circle at 30% 30%, #66ff66, #00cc00);
+    box-shadow:
+        0 0 10px rgba(0, 255, 0, 0.7),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    animation: meterLedPulse 2s ease-in-out infinite;
+}
+
+@keyframes meterLedPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 6px rgba(0, 255, 0, 0.5),
+            inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    }
+
+    50% {
+        box-shadow:
+            0 0 14px rgba(0, 255, 0, 0.9),
+            0 0 20px rgba(0, 255, 0, 0.3),
+            inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    }
+}
+
+.meter-status-text {
+    font-size: 8px;
+    font-weight: bold;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.meter-status-text.connected {
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.4);
+}
+
+.meter-status-text.disconnected {
+    color: #ff4444;
+}
+
+/* ============================================
+   TERMINAL PANEL - Visual Banana Jacks
+   ============================================ */
+.meter-terminal-panel {
+    background: linear-gradient(to bottom, #e0e0e0, #c8c8c8);
+    border-top: 2px solid #999;
+    padding: 10px 15px;
+}
+
+.meter-terminal-title {
+    font-size: 9px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.meter-terminals {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.meter-terminal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+}
+
+/* Banana Jack Visual */
+.terminal-jack {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 3px 6px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.terminal-jack.red {
+    background: radial-gradient(circle at 30% 30%, #ff6b6b 0%, #dc2626 70%, #991b1b 100%);
+    border-color: #991b1b;
+}
+
+.terminal-jack.black {
+    background: radial-gradient(circle at 30% 30%, #4b5563 0%, #1f2937 70%, #111827 100%);
+    border-color: #111827;
+}
+
+.jack-inner {
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, #0a0a0a 0%, #1a1a1a 100%);
+    border-radius: 50%;
+    border: 1px solid #000;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.terminal-label {
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.meter-terminal.hi .terminal-label {
+    color: #dc2626;
+}
+
+.meter-terminal.lo .terminal-label {
+    color: #374151;
+}
+
+/* AUX Terminal Styling */
+.meter-terminal-title.aux {
+    color: #f59e0b;
+    margin-top: 10px;
+}
+
+.meter-terminal.aux_hi .terminal-label {
+    color: #f59e0b;
+}
+
+.meter-terminal.aux_lo .terminal-label {
+    color: #3b82f6;
+}
+
+.terminal-jack.orange {
+    background: radial-gradient(circle at 30% 30%, #fbbf24 0%, #d97706 70%, #92400e 100%);
+    border-color: #92400e;
+}
+
+.terminal-jack.blue {
+    background: radial-gradient(circle at 30% 30%, #60a5fa 0%, #2563eb 70%, #1e40af 100%);
+    border-color: #1e40af;
+}
+
+/* ============================================
+   UNCERTAINTY MODE & COMPLIANCE STATUS STYLES
+   ============================================ */
+
+/* Compliance Status Badge */
+.compliance-badge {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    z-index: 10;
+    animation: badgePulse 2s infinite;
+}
+
+.compliance-badge.compliance {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
+}
+
+.compliance-badge.non-compliance {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.5);
+}
+
+.compliance-badge.out-of-tolerance {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.5);
+}
+
+@keyframes badgePulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: translateX(-50%) scale(1.02);
+    }
+}
+
+/* Device Border Colors based on Compliance */
+.multimeter-device.compliance {
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.multimeter-device.non-compliance {
+    border-color: #f59e0b;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4), 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.multimeter-device.out-of-tolerance {
+    border-color: #ef4444;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Uncertainty Mode Active Display */
+.meter-display.uncertainty-active {
+    animation: displayFlicker 0.5s infinite;
+}
+
+@keyframes displayFlicker {
+
+    0%,
+    100% {
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+    }
+
+    25% {
+        text-shadow: 0 0 15px rgba(0, 255, 0, 1);
+    }
+
+    75% {
+        text-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+    }
+}
+
+/* Uncertainty Indicator Icon */
+.uncertainty-indicator {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 16px;
+    animation: indicatorPulse 1s infinite;
+}
+
+@keyframes indicatorPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+/* Display adjustment for relative positioning */
+.meter-display {
+    position: relative;
+}

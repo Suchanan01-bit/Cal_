@@ -1,0 +1,299 @@
+/**
+ * WireConnection.css
+ * Realistic wire styling with 3D effects
+ */
+
+/* Wire Connection Group */
+.wire-connection-group {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.wire-connection-group:hover {
+    opacity: 0.85;
+}
+
+/* Shadow effect for depth */
+.wire-shadow {
+    stroke: rgba(0, 0, 0, 0.3);
+    stroke-width: 10;
+    fill: none;
+    filter: blur(3px);
+    transform: translate(2px, 3px);
+}
+
+/* Outer wire (darker color for 3D effect) */
+.wire-outer {
+    stroke: #2d2d2d;
+    stroke-width: 8;
+    fill: none;
+    stroke-linecap: round;
+    transition: all 0.3s ease;
+}
+
+.wire-outer.active {
+    stroke: #1a5f1a;
+}
+
+.wire-outer.valid {
+    stroke: #1a5f1a;
+}
+
+.wire-outer.invalid {
+    stroke: #5f1a1a;
+}
+
+/* Inner wire (main color) */
+.wire-inner {
+    stroke: #4a4a4a;
+    stroke-width: 6;
+    fill: none;
+    stroke-linecap: round;
+    transition: all 0.3s ease;
+}
+
+.wire-inner.active {
+    stroke: #22c55e;
+    filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+}
+
+.wire-inner.valid {
+    stroke: #22c55e;
+}
+
+.wire-inner.invalid {
+    stroke: #ef4444;
+}
+
+/* Highlight stripe for 3D effect */
+.wire-highlight {
+    stroke: rgba(255, 255, 255, 0.15);
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    transform: translate(-1px, -1px);
+}
+
+/* Connection plugs */
+.wire-plug {
+    fill: #1f1f1f;
+    stroke: #333;
+    stroke-width: 2;
+    transition: all 0.3s ease;
+}
+
+.wire-plug.start {
+    fill: #c0392b;
+}
+
+.wire-plug.end {
+    fill: #27ae60;
+}
+
+.wire-plug.active.valid {
+    fill: #2ecc71;
+    filter: drop-shadow(0 0 5px rgba(46, 204, 113, 0.8));
+}
+
+.wire-plug.active.invalid {
+    fill: #e74c3c;
+    filter: drop-shadow(0 0 5px rgba(231, 76, 60, 0.8));
+}
+
+/* Metal ring effect on plugs */
+.plug-ring {
+    fill: none;
+    stroke: #888;
+    stroke-width: 1;
+    opacity: 0.7;
+}
+
+/* Animation for active wire */
+@keyframes wire-pulse {
+
+    0%,
+    100% {
+        stroke-width: 6;
+        filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+    }
+
+    50% {
+        stroke-width: 7;
+        filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.9));
+    }
+}
+
+.wire-inner.active.valid {
+    animation: wire-pulse 2s ease-in-out infinite;
+}
+
+/* Wire glow effect when active */
+.wire-connection-group:has(.active.valid) .wire-shadow {
+    stroke: rgba(34, 197, 94, 0.2);
+    filter: blur(6px);
+}
+
+/* Red glow for invalid connections */
+@keyframes wire-error {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.9));
+    }
+}
+
+.wire-inner.invalid {
+    animation: wire-error 1s ease-in-out infinite;
+}
+
+/* ============================================
+   POLARITY-BASED WIRE COLORS
+   ============================================ */
+
+/* HI (Red/Positive) Wire */
+.wire-outer.hi {
+    stroke: #7f1d1d;
+}
+
+.wire-inner.hi {
+    stroke: #ef4444;
+}
+
+.wire-inner.hi.active {
+    stroke: #f87171;
+    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+}
+
+.wire-shadow.hi {
+    stroke: rgba(239, 68, 68, 0.2);
+}
+
+.wire-plug.hi {
+    fill: #dc2626;
+    stroke: #991b1b;
+}
+
+.wire-plug.hi.start,
+.wire-plug.hi.end {
+    fill: #dc2626;
+}
+
+/* LO (Black/Negative) Wire */
+.wire-outer.lo {
+    stroke: #0f0f0f;
+}
+
+.wire-inner.lo {
+    stroke: #374151;
+}
+
+.wire-inner.lo.active {
+    stroke: #4b5563;
+    filter: drop-shadow(0 0 8px rgba(55, 65, 81, 0.6));
+}
+
+.wire-shadow.lo {
+    stroke: rgba(31, 41, 55, 0.3);
+}
+
+.wire-plug.lo {
+    fill: #1f2937;
+    stroke: #111827;
+}
+
+.wire-plug.lo.start,
+.wire-plug.lo.end {
+    fill: #1f2937;
+}
+
+/* Active animations for HI wire */
+@keyframes wire-pulse-hi {
+
+    0%,
+    100% {
+        stroke-width: 6;
+        filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+    }
+
+    50% {
+        stroke-width: 7;
+        filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.9));
+    }
+}
+
+.wire-inner.hi.active.valid {
+    animation: wire-pulse-hi 2s ease-in-out infinite;
+}
+
+/* Active animations for LO wire */
+@keyframes wire-pulse-lo {
+
+    0%,
+    100% {
+        stroke-width: 6;
+        filter: drop-shadow(0 0 8px rgba(55, 65, 81, 0.6));
+    }
+
+    50% {
+        stroke-width: 7;
+        filter: drop-shadow(0 0 15px rgba(55, 65, 81, 0.9));
+    }
+}
+
+.wire-inner.lo.active.valid {
+    animation: wire-pulse-lo 2s ease-in-out infinite;
+}
+
+/* Active wire glow effects */
+.wire-connection-group.hi:has(.active.valid) .wire-shadow {
+    stroke: rgba(239, 68, 68, 0.3);
+    filter: blur(6px);
+}
+
+.wire-connection-group.lo:has(.active.valid) .wire-shadow {
+    stroke: rgba(55, 65, 81, 0.3);
+    filter: blur(6px);
+}
+
+/* ============================================
+   LOADING ERROR WIRE STYLES (Bad Wire)
+   ============================================ */
+
+/* Dashed stroke for inner wire to indicate "bad" connection */
+.wire-inner.bad-wire {
+    stroke-dasharray: 10, 10;
+    opacity: 0.8;
+}
+
+/* Slightly different color for bad wire outer to look worn */
+.wire-outer.bad-wire {
+    opacity: 0.7;
+    stroke-dasharray: 10, 10;
+}
+
+/* Pulse animation change for bad wire */
+@keyframes wire-pulse-bad {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.wire-inner.bad-wire.active {
+    animation: wire-pulse-bad 1.5s ease-in-out infinite !important;
+}
+
+/* Plugs look oxidized/dirty */
+.wire-plug.bad-wire {
+    fill: #555 !important;
+    stroke: #333 !important;
+}

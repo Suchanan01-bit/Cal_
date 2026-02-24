@@ -1,0 +1,87 @@
+/* ============================================
+   PlaceholderDevice.css - Placeholder Device Styles
+   ============================================ */
+
+.placeholder-device {
+    width: 600px;
+    padding: 0;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #ddd, #e5e5e5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    border: 3px solid #999;
+}
+
+.placeholder-header {
+    background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid #f97316;
+}
+
+.placeholder-logo {
+    font-weight: bold;
+    font-size: 18px;
+    color: #f97316;
+}
+
+.placeholder-model {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    flex: 1;
+}
+
+.placeholder-delete {
+    background: #e74c3c;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.placeholder-delete:hover {
+    background: #c0392b;
+}
+
+.placeholder-body {
+    padding: 15px;
+}
+
+.placeholder-screen {
+    background: #000;
+    border: 3px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.placeholder-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.placeholder-level {
+    font-size: 16px;
+    color: #00ff00;
+    margin-top: 10px;
+}
+
+.placeholder-note {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    padding: 10px;
+}
