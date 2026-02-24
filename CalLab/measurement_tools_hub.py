@@ -4,14 +4,19 @@ A comprehensive PyQt6-based GUI hub for controlling multiple measurement instrum
 """
 
 import sys
+import threading
+import time
 from pathlib import Path
+from datetime import datetime
+from typing import Dict, List, Optional
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QStackedWidget, QFrame, QScrollArea,
-    QGridLayout, QGroupBox, QStatusBar, QMessageBox
+    QGridLayout, QGroupBox, QStatusBar, QMessageBox, QComboBox,
+    QTableWidget, QTableWidgetItem, QHeaderView, QSizePolicy
 )
-from PyQt6.QtCore import Qt, QSize, QPropertyAnimation, QEasingCurve
+from PyQt6.QtCore import Qt, QSize, QPropertyAnimation, QEasingCurve, QTimer, pyqtSignal, QObject
 from PyQt6.QtGui import QFont, QIcon, QPalette, QColor
 from PyQt6.QtWidgets import QGraphicsDropShadowEffect
 
@@ -69,6 +74,12 @@ try:
     PYVISA_AVAILABLE = True
 except ImportError:
     PYVISA_AVAILABLE = False
+
+try:
+    from fluke1620_reader import Fluke1620Reader
+    FLUKE1620_AVAILABLE = True
+except ImportError:
+    FLUKE1620_AVAILABLE = False
 
 
 
@@ -314,6 +325,379 @@ class SpectrumAnalyzerWidget(QWidget):
         layout.addWidget(message, 1)
 
 
+class EnvDataSignal(QObject):
+    """Signal bridge for thread-safe UI updates from env monitor thread"""
+    data_updated = pyqtSignal(dict)
+
+
+class EnvironmentMonitorWidget(QWidget):
+    """Full-page Environment Monitor with connection controls, readout cards, real-time graph, and history"""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.fluke_reader = Fluke1620Reader() if FLUKE1620_AVAILABLE else None
+        self.monitoring = False
+        self.env_history: List[Dict] = []
+        self.signal = EnvDataSignal()
+        self.signal.data_updated.connect(self._on_data)
+        
+        # Real-time graph data
+        self.rt_times = []
+        self.rt_temps = []
+        self.rt_humids = []
+        self.max_rt_points = 60
+        
+        self.setup_ui()
+        QTimer.singleShot(500, self.refresh_ports)
+    
+    def setup_ui(self):
+        from matplotlib.figure import Figure
+        from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+        import matplotlib.dates as mdates
+        self._mdates = mdates
+        
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(25, 20, 25, 20)
+        layout.setSpacing(12)
+        
+        # ── Title Row ──
+        title_row = QHBoxLayout()
+        title = QLabel("🌡️ Environment Monitor")
+        title.setFont(QFont("Segoe UI", 20, QFont.Weight.Bold))
+        title.setStyleSheet("color: #0d9488;")
+        title_row.addWidget(title)
+        title_row.addStretch()
+        
+        # Status
+        self.status_label = QLabel("● Disconnected")
+        self.status_label.setFont(QFont("Consolas", 10))
+        self.status_label.setStyleSheet("color: #ef4444;")
+        title_row.addWidget(self.status_label)
+        layout.addLayout(title_row)
+        
+        subtitle = QLabel("Real-time temperature & humidity from Fluke 1620A DewK")
+        subtitle.setFont(QFont("Segoe UI", 10))
+        subtitle.setStyleSheet("color: #6b7280;")
+        layout.addWidget(subtitle)
+        
+        # ── Connection Controls ──
+        conn_frame = QFrame()
+        conn_frame.setStyleSheet("QFrame { background-color: #f0fdfa; border: 1px solid #ccfbf1; border-radius: 8px; }")
+        conn_layout = QHBoxLayout(conn_frame)
+        conn_layout.setContentsMargins(12, 8, 12, 8)
+        conn_layout.setSpacing(8)
+        
+        conn_layout.addWidget(QLabel("COM Port:"))
+        self.port_combo = QComboBox()
+        self.port_combo.setMinimumWidth(180)
+        self.port_combo.setMinimumHeight(28)
+        self.port_combo.setStyleSheet("QComboBox { background: white; border: 1px solid #d1d5db; border-radius: 4px; padding: 2px 6px; }")
+        conn_layout.addWidget(self.port_combo)
+        
+        refresh_btn = QPushButton("🔄")
+        refresh_btn.setFixedSize(28, 28)
+        refresh_btn.setStyleSheet("QPushButton { background: white; border: 1px solid #d1d5db; border-radius: 4px; } QPushButton:hover { background: #e5e7eb; }")
+        refresh_btn.clicked.connect(self.refresh_ports)
+        conn_layout.addWidget(refresh_btn)
+        
+        self.connect_btn = QPushButton("Connect")
+        self.connect_btn.setMinimumHeight(28)
+        self.connect_btn.setStyleSheet("QPushButton { background-color: #0d9488; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; } QPushButton:hover { background-color: #0f766e; }")
+        self.connect_btn.clicked.connect(self.toggle_connection)
+        conn_layout.addWidget(self.connect_btn)
+        
+        self.monitor_btn = QPushButton("▶ Start Monitor")
+        self.monitor_btn.setMinimumHeight(28)
+        self.monitor_btn.setEnabled(False)
+        self.monitor_btn.setStyleSheet("QPushButton { background-color: #14b8a6; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; } QPushButton:hover { background-color: #0d9488; } QPushButton:disabled { background-color: #94a3b8; }")
+        self.monitor_btn.clicked.connect(self.toggle_monitoring)
+        conn_layout.addWidget(self.monitor_btn)
+        
+        conn_layout.addStretch()
+        layout.addWidget(conn_frame)
+        
+        # ── Readout Cards (horizontal row) ──
+        cards_layout = QHBoxLayout()
+        cards_layout.setSpacing(12)
+        
+        self.big_labels = {}
+        big_cards_info = [
+            ("Temperature 1", "°C", "#ea580c"),
+            ("Temperature 2", "°C", "#f97316"),
+            ("Humidity", "%RH", "#0891b2"),
+            ("Dewpoint", "°C", "#7c3aed"),
+        ]
+        
+        for label, unit, color in big_cards_info:
+            card = QFrame()
+            card.setStyleSheet(f"QFrame {{ background-color: white; border: none; border-radius: 10px; }}")
+            card.setMinimumHeight(100)
+            card_layout = QVBoxLayout(card)
+            card_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            card_layout.setSpacing(2)
+            card_layout.setContentsMargins(8, 6, 8, 6)
+            
+            name_lbl = QLabel(label)
+            name_lbl.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
+            name_lbl.setStyleSheet(f"color: {color};")
+            name_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            card_layout.addWidget(name_lbl)
+            
+            val_lbl = QLabel("--")
+            val_lbl.setFont(QFont("Consolas", 28, QFont.Weight.Bold))
+            val_lbl.setStyleSheet(f"color: {color};")
+            val_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            card_layout.addWidget(val_lbl)
+            
+            unit_lbl = QLabel(unit)
+            unit_lbl.setFont(QFont("Segoe UI", 9))
+            unit_lbl.setStyleSheet(f"color: {color}90;")
+            unit_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            card_layout.addWidget(unit_lbl)
+            
+            shadow = QGraphicsDropShadowEffect()
+            shadow.setBlurRadius(12)
+            shadow.setXOffset(0)
+            shadow.setYOffset(3)
+            shadow.setColor(QColor(0, 0, 0, 18))
+            card.setGraphicsEffect(shadow)
+            
+            self.big_labels[label] = val_lbl
+            cards_layout.addWidget(card)
+        
+        layout.addLayout(cards_layout)
+        
+        # ── Real-Time Graph (matplotlib) ──
+        graph_frame = QFrame()
+        graph_frame.setStyleSheet("QFrame { background-color: white; border: 1px solid #e5e7eb; border-radius: 8px; }")
+        graph_inner = QVBoxLayout(graph_frame)
+        graph_inner.setContentsMargins(8, 8, 8, 8)
+        
+        graph_header = QLabel("📊 Real-Time Graph")
+        graph_header.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
+        graph_header.setStyleSheet("color: #374151; border: none;")
+        graph_inner.addWidget(graph_header)
+        
+        self.rt_fig = Figure(figsize=(8, 3), dpi=90, facecolor='white')
+        self.rt_ax = self.rt_fig.add_subplot(111)
+        self.rt_ax2 = self.rt_ax.twinx()
+        self.rt_ax.set_facecolor('white')
+        self.rt_ax.grid(True, linestyle='-', alpha=0.3)
+        self.rt_ax.set_ylabel('Temperature [°C]', fontsize=9, color='#FF6600')
+        self.rt_ax2.set_ylabel('Humidity [%RH]', fontsize=9, color='#00BFFF')
+        self.rt_ax.tick_params(axis='y', colors='#FF6600', labelsize=8)
+        self.rt_ax2.tick_params(axis='y', colors='#00BFFF', labelsize=8)
+        self.rt_ax.tick_params(axis='x', colors='black', labelsize=8)
+        self.rt_fig.tight_layout()
+        
+        self.rt_canvas = FigureCanvasQTAgg(self.rt_fig)
+        self.rt_canvas.setMinimumHeight(220)
+        self.rt_canvas.setStyleSheet("border: none;")
+        graph_inner.addWidget(self.rt_canvas)
+        
+        self.rt_time_label = QLabel("")
+        self.rt_time_label.setFont(QFont("Consolas", 8))
+        self.rt_time_label.setStyleSheet("color: #94a3b8; border: none;")
+        self.rt_time_label.setAlignment(Qt.AlignmentFlag.AlignRight)
+        graph_inner.addWidget(self.rt_time_label)
+        
+        layout.addWidget(graph_frame, 1)
+        
+        # ── History Table ──
+        history_header = QLabel("📋 Reading History (last 50)")
+        history_header.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
+        history_header.setStyleSheet("color: #374151;")
+        layout.addWidget(history_header)
+        
+        self.history_table = QTableWidget(0, 5)
+        self.history_table.setHorizontalHeaderLabels(["Time", "Temp 1 (°C)", "Temp 2 (°C)", "Humidity (%RH)", "Dewpoint (°C)"])
+        self.history_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.history_table.setAlternatingRowColors(True)
+        self.history_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.history_table.setMaximumHeight(200)
+        self.history_table.setStyleSheet("""
+            QTableWidget { background-color: white; border: 1px solid #e5e7eb; border-radius: 8px; gridline-color: #f3f4f6; }
+            QHeaderView::section { background-color: #f0fdfa; color: #0d9488; font-weight: bold; border: none; padding: 6px; }
+            QTableWidget::item:alternate { background-color: #f9fafb; }
+        """)
+        layout.addWidget(self.history_table)
+    
+    # ── Connection Logic ──
+    def refresh_ports(self):
+        self.port_combo.clear()
+        if not FLUKE1620_AVAILABLE:
+            return
+        ports = Fluke1620Reader.list_available_ports()
+        for port, desc in ports:
+            self.port_combo.addItem(f"{port} - {desc}", port)
+    
+    def toggle_connection(self):
+        if self.fluke_reader and self.fluke_reader.is_connected():
+            self.disconnect_fluke()
+        else:
+            self.connect_fluke()
+    
+    def connect_fluke(self):
+        port = self.port_combo.currentData()
+        if not port or not self.fluke_reader:
+            return
+        success, msg = self.fluke_reader.connect(port)
+        if success:
+            self.status_label.setText(f"● Connected ({port})")
+            self.status_label.setStyleSheet("color: #16a34a;")
+            self.connect_btn.setText("Disconnect")
+            self.connect_btn.setStyleSheet("QPushButton { background-color: #dc2626; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; } QPushButton:hover { background-color: #b91c1c; }")
+            self.monitor_btn.setEnabled(True)
+        else:
+            self.status_label.setText("● Connection failed")
+            self.status_label.setStyleSheet("color: #ef4444;")
+    
+    def disconnect_fluke(self):
+        self.stop_monitoring()
+        if self.fluke_reader:
+            self.fluke_reader.disconnect()
+        self.status_label.setText("● Disconnected")
+        self.status_label.setStyleSheet("color: #ef4444;")
+        self.connect_btn.setText("Connect")
+        self.connect_btn.setStyleSheet("QPushButton { background-color: #0d9488; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; } QPushButton:hover { background-color: #0f766e; }")
+        self.monitor_btn.setEnabled(False)
+        self.monitor_btn.setText("▶ Start Monitor")
+    
+    def toggle_monitoring(self):
+        if self.monitoring:
+            self.stop_monitoring()
+        else:
+            self.start_monitoring()
+    
+    def start_monitoring(self):
+        if not self.fluke_reader or not self.fluke_reader.is_connected():
+            return
+        self.monitoring = True
+        self.monitor_btn.setText("■ Stop Monitor")
+        self.monitor_btn.setStyleSheet("QPushButton { background-color: #dc2626; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; } QPushButton:hover { background-color: #b91c1c; }")
+        threading.Thread(target=self._monitor_loop, daemon=True).start()
+    
+    def stop_monitoring(self):
+        self.monitoring = False
+        self.monitor_btn.setText("▶ Start Monitor")
+        self.monitor_btn.setStyleSheet("QPushButton { background-color: #14b8a6; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; } QPushButton:hover { background-color: #0d9488; } QPushButton:disabled { background-color: #94a3b8; }")
+    
+    def _monitor_loop(self):
+        while self.monitoring:
+            if not self.fluke_reader or not self.fluke_reader.is_connected():
+                self.monitoring = False
+                break
+            try:
+                data = self.fluke_reader.read_all()
+                data['timestamp'] = datetime.now()
+                self.env_history.append(data)
+                if len(self.env_history) > 50:
+                    self.env_history = self.env_history[-50:]
+                self.signal.data_updated.emit(data)
+            except Exception as e:
+                print(f"Env monitor error: {e}")
+            time.sleep(2)
+    
+    # ── UI Update (main thread via signal) ──
+    def _on_data(self, data):
+        """Update readout cards, real-time graph, and history table"""
+        def _fmt(v):
+            return f"{v:.2f}" if v is not None else "--"
+        
+        # Update readout cards
+        mapping = {
+            "Temperature 1": 'temperature1',
+            "Temperature 2": 'temperature2',
+            "Humidity": 'humidity',
+            "Dewpoint": 'dewpoint',
+        }
+        for label, key in mapping.items():
+            self.big_labels[label].setText(_fmt(data.get(key)))
+        
+        # Update real-time graph
+        self._update_realtime_graph(data)
+        
+        # Update history table (insert at top)
+        ts = data.get('timestamp')
+        ts_str = ts.strftime("%H:%M:%S") if ts else "--"
+        
+        self.history_table.insertRow(0)
+        self.history_table.setItem(0, 0, QTableWidgetItem(ts_str))
+        self.history_table.setItem(0, 1, QTableWidgetItem(_fmt(data.get('temperature1'))))
+        self.history_table.setItem(0, 2, QTableWidgetItem(_fmt(data.get('temperature2'))))
+        self.history_table.setItem(0, 3, QTableWidgetItem(_fmt(data.get('humidity'))))
+        self.history_table.setItem(0, 4, QTableWidgetItem(_fmt(data.get('dewpoint'))))
+        
+        while self.history_table.rowCount() > 50:
+            self.history_table.removeRow(self.history_table.rowCount() - 1)
+    
+    def _update_realtime_graph(self, data):
+        """Update the real-time graph with new data - dual Y-axis like SmartGraph3"""
+        try:
+            now = data.get('timestamp', datetime.now())
+            temp_val = data.get('temperature1')
+            humid_val = data.get('humidity')
+            
+            if temp_val is not None:
+                self.rt_times.append(now)
+                self.rt_temps.append(temp_val)
+                self.rt_humids.append(humid_val if humid_val is not None else 0)
+                
+                # Keep rolling window
+                if len(self.rt_times) > self.max_rt_points:
+                    self.rt_times = self.rt_times[-self.max_rt_points:]
+                    self.rt_temps = self.rt_temps[-self.max_rt_points:]
+                    self.rt_humids = self.rt_humids[-self.max_rt_points:]
+            
+            # Redraw
+            self.rt_ax.clear()
+            self.rt_ax2.clear()
+            
+            self.rt_ax.set_facecolor('white')
+            self.rt_ax.grid(True, linestyle='-', alpha=0.3)
+            
+            if len(self.rt_times) > 1:
+                # Temperature on left axis (Orange)
+                line1, = self.rt_ax.plot(self.rt_times, self.rt_temps,
+                    color='#FF6600', linewidth=1.5, label='Temperature [°C]')
+                # Humidity on right axis (Cyan)
+                line2, = self.rt_ax2.plot(self.rt_times, self.rt_humids,
+                    color='#00BFFF', linewidth=1.5, label='Humidity [%RH]')
+                
+                # Combined legend
+                lines = [line1, line2]
+                labels = [l.get_label() for l in lines]
+                self.rt_ax.legend(lines, labels, loc='upper left', fontsize=7,
+                    facecolor='white', edgecolor='gray', framealpha=0.9)
+            
+            # Axis labels and colors
+            self.rt_ax.set_ylabel('Temperature [°C]', fontsize=9, color='#FF6600')
+            self.rt_ax2.set_ylabel('Humidity [%RH]', fontsize=9, color='#00BFFF')
+            self.rt_ax.tick_params(axis='y', colors='#FF6600', labelsize=8)
+            self.rt_ax2.tick_params(axis='y', colors='#00BFFF', labelsize=8)
+            
+            # Date range title
+            if self.rt_times:
+                start_t = self.rt_times[0].strftime('%d/%m/%Y %H:%M:%S')
+                end_t = self.rt_times[-1].strftime('%d/%m/%Y %H:%M:%S')
+                self.rt_ax.set_title(f'({start_t} — {end_t})', fontsize=8, color='#374151')
+            
+            # X-axis formatting
+            self.rt_ax.xaxis.set_major_formatter(self._mdates.DateFormatter('%H:%M:%S'))
+            self.rt_ax.tick_params(axis='x', colors='black', labelsize=7)
+            for lbl in self.rt_ax.get_xticklabels():
+                lbl.set_rotation(30)
+            
+            self.rt_fig.tight_layout()
+            self.rt_canvas.draw()
+            
+            # Update time label
+            self.rt_time_label.setText(f"Last update: {now.strftime('%H:%M:%S')}")
+            
+        except Exception as e:
+            print(f"Graph update error: {e}")
+
+
 class MeasurementToolsHub(QMainWindow):
     """Main hub window for all measurement instruments"""
     
@@ -346,6 +730,7 @@ class MeasurementToolsHub(QMainWindow):
         # Sidebar
         sidebar = self.create_sidebar()
         content_layout.addWidget(sidebar)
+
         
         # Main content area (stacked widget)
         self.stacked_widget = QStackedWidget()
@@ -439,6 +824,11 @@ class MeasurementToolsHub(QMainWindow):
             self.waveform_33120a_widget = QLabel("HP/Agilent 33120A Waveform Generator module not available")
             self.stacked_widget.addWidget(self.waveform_33120a_widget)
         
+        # Environment Monitor Widget (Index 13)
+        self.env_monitor_widget = EnvironmentMonitorWidget()
+        self.env_monitor_widget.signal.data_updated.connect(self._update_env_navbar)
+        self.stacked_widget.addWidget(self.env_monitor_widget)
+        
         content_layout.addWidget(self.stacked_widget, 1)
         
         main_layout.addLayout(content_layout, 1)
@@ -491,6 +881,29 @@ class MeasurementToolsHub(QMainWindow):
         
         layout.addStretch()
         
+        # Environment indicator badge (clickable)
+        self.env_badge = QPushButton("🌡️ --°C  |  💧 --%RH")
+        self.env_badge.setFont(QFont("Consolas", 10, QFont.Weight.Bold))
+        self.env_badge.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.env_badge.setStyleSheet("""
+            QPushButton {
+                color: white;
+                background-color: rgba(255, 255, 255, 0.18);
+                border: 1px solid rgba(255, 255, 255, 0.35);
+                border-radius: 6px;
+                padding: 6px 14px;
+                letter-spacing: 0.5px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.30);
+                border: 1px solid rgba(255, 255, 255, 0.55);
+            }
+        """)
+        self.env_badge.clicked.connect(lambda: self.switch_page(13))
+        layout.addWidget(self.env_badge)
+        
+        layout.addSpacing(12)
+        
         # System status indicator
         status_widget = QWidget()
         status_layout = QHBoxLayout(status_widget)
@@ -509,7 +922,7 @@ class MeasurementToolsHub(QMainWindow):
         status_layout.addWidget(status_text)
         layout.addWidget(status_widget)
         
-        layout.addSpacing(20)
+        layout.addSpacing(12)
         
         # Lab badge
         info_label = QLabel("CAL-LAB")
@@ -655,6 +1068,17 @@ class MeasurementToolsHub(QMainWindow):
         layout.addWidget(fiber_label)
         layout.addWidget(fiber_container)
         self.category_widgets['fiber'] = fiber_container
+        
+        # ========== ENVIRONMENT CATEGORY ==========
+        env_label, env_container = self.create_collapsible_category(
+            "🌡️ Environment",
+            [
+                ("🌡️ Fluke 1620A Env Monitor", 13, FLUKE1620_AVAILABLE),
+            ]
+        )
+        layout.addWidget(env_label)
+        layout.addWidget(env_container)
+        self.category_widgets['environment'] = env_container
         
         layout.addStretch()
         
@@ -981,6 +1405,14 @@ class MeasurementToolsHub(QMainWindow):
         
         return page
     
+    def _update_env_navbar(self, data):
+        """Update the env badge in the navbar with live temp/humidity values"""
+        def _f(v):
+            return f"{v:.1f}" if v is not None else "--"
+        temp = _f(data.get('temperature1'))
+        humid = _f(data.get('humidity'))
+        self.env_badge.setText(f"🌡️ {temp}°C  |  💧 {humid}%RH")
+    
     def switch_page(self, index):
         """Switch to a different page"""
         self.stacked_widget.setCurrentIndex(index)
@@ -998,7 +1430,9 @@ class MeasurementToolsHub(QMainWindow):
             "HP 34401A Multimeter - 6.5-digit precision measurement",
             "Fluke 8508A Reference Multimeter - 8.5-digit reference measurement",
             "Keysight 34465A Multimeter - 6.5-digit Truevolt with Temperature/Capacitance",
-            "Rohde & Schwarz Power Meter - Precision Power Measurement (dBm/W)"
+            "Rohde & Schwarz Power Meter - Precision Power Measurement (dBm/W)",
+            "HP/Agilent 33120A Waveform Generator",
+            "Fluke 1620A Environment Monitor - Real-time Temperature & Humidity",
         ]
         
         if index < len(pages):
