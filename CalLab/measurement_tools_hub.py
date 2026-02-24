@@ -65,6 +65,12 @@ except ImportError:
     WAVEFORM_33120A_AVAILABLE = False
 
 try:
+    from spectrum_n1996a_gui import AgilentN1996AGUI
+    SPECTRUM_N1996A_AVAILABLE = True
+except ImportError:
+    SPECTRUM_N1996A_AVAILABLE = False
+
+try:
     import pyvisa
     PYVISA_AVAILABLE = True
 except ImportError:
@@ -438,6 +444,15 @@ class MeasurementToolsHub(QMainWindow):
         else:
             self.waveform_33120a_widget = QLabel("HP/Agilent 33120A Waveform Generator module not available")
             self.stacked_widget.addWidget(self.waveform_33120a_widget)
+
+        # Agilent N1996A CSA Spectrum Analyzer (Index 13)
+        if SPECTRUM_N1996A_AVAILABLE:
+            self.spectrum_n1996a_widget = AgilentN1996AGUI()
+            self.spectrum_n1996a_widget.setWindowFlags(Qt.WindowType.Widget)
+            self.stacked_widget.addWidget(self.spectrum_n1996a_widget)
+        else:
+            self.spectrum_n1996a_widget = QLabel("Agilent N1996A Spectrum Analyzer module not available")
+            self.stacked_widget.addWidget(self.spectrum_n1996a_widget)
         
         content_layout.addWidget(self.stacked_widget, 1)
         
@@ -610,8 +625,8 @@ class MeasurementToolsHub(QMainWindow):
                 ("🔬 Agilent 53132 Universal Counter", 1, COUNTER_AVAILABLE),
                 ("📡 Power Meter (R&S NRP)", 11, RS_POWER_METER_AVAILABLE),
                 ("🌊 HP 33120A Waveform Generator", 12, WAVEFORM_33120A_AVAILABLE),
+                ("📡 Agilent N1996A Spectrum Analyzer", 13, SPECTRUM_N1996A_AVAILABLE),
                 ("🌊 Signal Generator", 6, False),
-                ("📡 Spectrum Analyzer", 7, False),
                 ("📻 Network Analyzer", 10, False),
             ]
         )
@@ -913,8 +928,8 @@ class MeasurementToolsHub(QMainWindow):
              "Coming Soon", 5),
             ("Signal Generator", "Arbitrary waveform generation.", "🌊", 
              "Coming Soon", 6),
-            ("Spectrum Analyzer", "Frequency domain analysis.", "📡", 
-             "Coming Soon", 7),
+            ("Agilent N1996A CSA", "Cable & Antenna Spectrum Analyzer, 100 kHz – 3 GHz.", "📡",
+             "Available" if SPECTRUM_N1996A_AVAILABLE else "Not Available", 13),
         ]
         
         row, col = 0, 0
@@ -998,7 +1013,9 @@ class MeasurementToolsHub(QMainWindow):
             "HP 34401A Multimeter - 6.5-digit precision measurement",
             "Fluke 8508A Reference Multimeter - 8.5-digit reference measurement",
             "Keysight 34465A Multimeter - 6.5-digit Truevolt with Temperature/Capacitance",
-            "Rohde & Schwarz Power Meter - Precision Power Measurement (dBm/W)"
+            "Rohde & Schwarz Power Meter - Precision Power Measurement (dBm/W)",
+            "HP/Agilent 33120A Waveform Generator - Function & Arbitrary Waveform",
+            "Agilent N1996A CSA Spectrum Analyzer - 100 kHz to 3 GHz Spectrum Analysis"
         ]
         
         if index < len(pages):
