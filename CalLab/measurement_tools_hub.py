@@ -747,6 +747,78 @@ class CalibrationSimulatorWidget(QWidget):
             layout.addWidget(placeholder)
 
 
+class CalibrationSimulatorWindow(QMainWindow):
+    """Standalone window for the DC-RF Calibration Simulator — no sidebar"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Calibration Simulator — Cal-Lab")
+        self.setGeometry(50, 50, 1600, 950)
+        self._setup_ui()
+
+    def _setup_ui(self):
+        central = QWidget()
+        self.setCentralWidget(central)
+        root = QVBoxLayout(central)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
+
+        # ── Header (same teal gradient as hub) ──────────────────────
+        header = QFrame()
+        header.setObjectName("cal_sim_header")
+        header.setStyleSheet("""
+            QFrame#cal_sim_header {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 #4A90E2, stop:0.5 #50C9E8, stop:1 #7DD3C0);
+                border: none;
+            }
+        """)
+        header.setFixedHeight(70)
+
+        h_layout = QHBoxLayout(header)
+        h_layout.setContentsMargins(30, 15, 30, 15)
+
+        # Title
+        title = QLabel("⚙ Calibration Simulator")
+        title.setFont(QFont("Segoe UI", 22, QFont.Weight.Bold))
+        title.setStyleSheet("color: white; letter-spacing: 2px; font-weight: 600;")
+        h_layout.addWidget(title)
+
+        h_layout.addStretch()
+
+        # CAL-LAB button — closes this window / goes back
+        back_btn = QPushButton("CAL-LAB")
+        back_btn.setFont(QFont("Consolas", 10, QFont.Weight.Bold))
+        back_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        back_btn.setStyleSheet("""
+            QPushButton {
+                color: #4A90E2;
+                background-color: white;
+                border: 2px solid white;
+                border-radius: 4px;
+                padding: 6px 14px;
+                letter-spacing: 1.5px;
+            }
+            QPushButton:hover {
+                color: white;
+                background-color: rgba(255, 255, 255, 0.30);
+                border: 2px solid white;
+            }
+            QPushButton:pressed {
+                background-color: rgba(255, 255, 255, 0.55);
+                color: #1a73e8;
+            }
+        """)
+        back_btn.clicked.connect(self.close)
+        h_layout.addWidget(back_btn)
+
+        root.addWidget(header)
+
+        # ── Cal Sim Content ─────────────────────────────────────────
+        self._sim_widget = CalibrationSimulatorWidget()
+        root.addWidget(self._sim_widget, 1)
+
+
 class MeasurementToolsHub(QMainWindow):
     """Main hub window for all measurement instruments"""
     
@@ -986,11 +1058,11 @@ class MeasurementToolsHub(QMainWindow):
         
         layout.addSpacing(12)
         
-        # Cal Sim badge (clickable)
-        cal_sim_btn = QPushButton("CAL SIM")
-        cal_sim_btn.setFont(QFont("Consolas", 10, QFont.Weight.Bold))
-        cal_sim_btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        cal_sim_btn.setStyleSheet("""
+        # Cal Sim badge (clickable, with flash animation on click)
+        self.cal_sim_btn = QPushButton("CAL-SIM")
+        self.cal_sim_btn.setFont(QFont("Consolas", 10, QFont.Weight.Bold))
+        self.cal_sim_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._cal_sim_normal_style = """
             QPushButton {
                 color: white;
                 background-color: rgba(255, 255, 255, 0.18);
@@ -1001,25 +1073,53 @@ class MeasurementToolsHub(QMainWindow):
             }
             QPushButton:hover {
                 background-color: rgba(255, 255, 255, 0.35);
-                border: 1px solid rgba(255, 255, 255, 0.55);
+                border: 1px solid rgba(255, 255, 255, 0.60);
             }
-        """)
-        cal_sim_btn.clicked.connect(lambda: self.switch_page(15))
-        layout.addWidget(cal_sim_btn)
+            QPushButton:pressed {
+                background-color: rgba(255, 255, 255, 0.55);
+            }
+        """
+        self._cal_sim_active_style = """
+            QPushButton {
+                color: #1a73e8;
+                background-color: white;
+                border: 2px solid white;
+                border-radius: 4px;
+                padding: 6px 14px;
+                letter-spacing: 1.5px;
+            }
+        """
+        self.cal_sim_btn.setStyleSheet(self._cal_sim_normal_style)
+        self.cal_sim_btn.clicked.connect(self._on_cal_sim_clicked)
+        layout.addWidget(self.cal_sim_btn)
         
         layout.addSpacing(6)
         
-        # Lab badge
-        info_label = QLabel("CAL-LAB")
-        info_label.setFont(QFont("Consolas", 10, QFont.Weight.Bold))
-        info_label.setStyleSheet("""
-            color: #4A90E2;
-            background-color: white;
-            padding: 6px 14px;
-            border-radius: 4px;
-            letter-spacing: 1.5px;
+        # CAL-LAB badge (clickable — goes back to Home page)
+        self.cal_lab_btn = QPushButton("CAL-LAB")
+        self.cal_lab_btn.setFont(QFont("Consolas", 10, QFont.Weight.Bold))
+        self.cal_lab_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.cal_lab_btn.setStyleSheet("""
+            QPushButton {
+                color: #4A90E2;
+                background-color: white;
+                border: 2px solid white;
+                border-radius: 4px;
+                padding: 6px 14px;
+                letter-spacing: 1.5px;
+            }
+            QPushButton:hover {
+                color: white;
+                background-color: rgba(255, 255, 255, 0.30);
+                border: 2px solid white;
+            }
+            QPushButton:pressed {
+                background-color: rgba(255, 255, 255, 0.55);
+                color: #1a73e8;
+            }
         """)
-        layout.addWidget(info_label)
+        self.cal_lab_btn.clicked.connect(self._on_cal_lab_clicked)
+        layout.addWidget(self.cal_lab_btn)
         
         return self.header
     
@@ -1164,17 +1264,6 @@ class MeasurementToolsHub(QMainWindow):
         layout.addWidget(env_label)
         layout.addWidget(env_container)
         self.category_widgets['environment'] = env_container
-        
-        # ========== CALIBRATION SIMULATOR CATEGORY ==========
-        sim_label, sim_container = self.create_collapsible_category(
-            "🧪 Calibration Simulator",
-            [
-                ("🧪 DC/RF Calibration Simulator", 15, True),
-            ]
-        )
-        layout.addWidget(sim_label)
-        layout.addWidget(sim_container)
-        self.category_widgets['simulator'] = sim_container
         
         layout.addStretch()
         
@@ -1509,6 +1598,26 @@ class MeasurementToolsHub(QMainWindow):
         humid = _f(data.get('humidity'))
         self.env_badge.setText(f"🌡️ {temp}°C  |  💧 {humid}%RH")
     
+    def _on_cal_sim_clicked(self):
+        """Open the Calibration Simulator as a separate standalone window"""
+        # Brief flash feedback
+        self.cal_sim_btn.setStyleSheet(self._cal_sim_active_style)
+        
+        # Open (or bring to front) the standalone Cal Sim window
+        if not hasattr(self, '_cal_sim_window') or self._cal_sim_window is None:
+            self._cal_sim_window = CalibrationSimulatorWindow(parent=None)
+        
+        self._cal_sim_window.showMaximized()
+        self._cal_sim_window.raise_()
+        self._cal_sim_window.activateWindow()
+        
+        # Revert button style after the window opens
+        QTimer.singleShot(200, lambda: self.cal_sim_btn.setStyleSheet(self._cal_sim_normal_style))
+
+    def _on_cal_lab_clicked(self):
+        """Navigate back to Home page"""
+        self.switch_page(0)
+    
     def switch_page(self, index):
         """Switch to a different page"""
         self.stacked_widget.setCurrentIndex(index)
@@ -1535,6 +1644,54 @@ class MeasurementToolsHub(QMainWindow):
         
         if index < len(pages):
             self.status_bar.showMessage(pages[index])
+        
+        # Toggle CAL SIM / CAL-LAB active visual state
+        self._update_header_active_state(index)
+    
+    def _update_header_active_state(self, index):
+        """Swap active/inactive styles between CAL SIM and CAL-LAB based on current page"""
+        _active = """
+            QPushButton {
+                color: #4A90E2;
+                background-color: white;
+                border: 2px solid white;
+                border-radius: 4px;
+                padding: 6px 14px;
+                letter-spacing: 1.5px;
+            }
+            QPushButton:hover {
+                color: white;
+                background-color: rgba(255, 255, 255, 0.30);
+                border: 2px solid white;
+            }
+            QPushButton:pressed {
+                background-color: rgba(255, 255, 255, 0.55);
+                color: #1a73e8;
+            }
+        """
+        _inactive = """
+            QPushButton {
+                color: white;
+                background-color: rgba(255, 255, 255, 0.18);
+                border: 1px solid rgba(255, 255, 255, 0.35);
+                border-radius: 4px;
+                padding: 6px 14px;
+                letter-spacing: 1.5px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.35);
+                border: 1px solid rgba(255, 255, 255, 0.60);
+            }
+            QPushButton:pressed {
+                background-color: rgba(255, 255, 255, 0.55);
+            }
+        """
+        if index == 15:   # Cal Sim page is active
+            self.cal_sim_btn.setStyleSheet(_active)
+            self.cal_lab_btn.setStyleSheet(_inactive)
+        else:             # Any other page — CAL-LAB is the "home" badge
+            self.cal_sim_btn.setStyleSheet(_inactive)
+            self.cal_lab_btn.setStyleSheet(_active)
     
     def show_about(self):
         """Show about dialog"""
