@@ -3,10 +3,10 @@
    ============================================ */
 
 .sidebar {
-    width: 360px;
+    width: 240px;
     background: var(--dark-bg);
     color: white;
-    padding: 15px;
+    padding: 10px;
     overflow-y: auto;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
     flex-shrink: 0;

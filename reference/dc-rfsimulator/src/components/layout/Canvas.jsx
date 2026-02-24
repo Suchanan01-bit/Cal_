@@ -1,6 +1,7 @@
 /**
  * Canvas.jsx
  * Main canvas area for placing and connecting devices
+ * With zoom (Ctrl+Scroll) and pan (Middle-mouse drag) support
  */
 
 import { forwardRef, useCallback, useRef, useEffect, useState } from 'react';
@@ -10,6 +11,10 @@ import PlaceholderDevice from '../devices/PlaceholderDevice';
 import WireConnection from '../common/WireConnection';
 import ConnectionAlert from '../common/ConnectionAlert';
 import './Canvas.css';
+
+const MIN_ZOOM = 0.25;
+const MAX_ZOOM = 2.0;
+const ZOOM_STEP = 0.1;
 
 const Canvas = forwardRef((props, ref) => {
     const {
@@ -32,25 +37,115 @@ const Canvas = forwardRef((props, ref) => {
     const [draggingDevice, setDraggingDevice] = useState(null);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [wireUpdateTrigger, setWireUpdateTrigger] = useState(0);
+    const [zoom, setZoom] = useState(1);
 
-    // Force wire redraw on component position change
+    // Pan state
+    const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+    const [isPanning, setIsPanning] = useState(false);
+    const panStartRef = useRef({ x: 0, y: 0 });
+    const panOffsetStartRef = useRef({ x: 0, y: 0 });
+
+    // Force wire redraw on component position change, zoom, or pan change
     useEffect(() => {
         setWireUpdateTrigger(prev => prev + 1);
-    }, [components]);
+    }, [components, zoom, panOffset]);
 
-    // Handle drop from sidebar
+    // Ctrl+Scroll zoom handler
+    useEffect(() => {
+        const container = canvasRef.current?.parentElement;
+        if (!container) return;
+
+        const handleWheel = (e) => {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                setZoom(prev => {
+                    const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+                    const newZoom = Math.round((prev + delta) * 100) / 100;
+                    return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+                });
+            }
+        };
+
+        container.addEventListener('wheel', handleWheel, { passive: false });
+        return () => container.removeEventListener('wheel', handleWheel);
+    }, []);
+
+    // Middle-mouse pan handler
+    useEffect(() => {
+        const container = canvasRef.current?.parentElement;
+        if (!container) return;
+
+        const handleMouseDown = (e) => {
+            // Middle mouse button = button 1
+            if (e.button === 1) {
+                e.preventDefault();
+                setIsPanning(true);
+                panStartRef.current = { x: e.clientX, y: e.clientY };
+                panOffsetStartRef.current = { ...panOffset };
+                container.style.cursor = 'grabbing';
+            }
+        };
+
+        const handleMouseMove = (e) => {
+            if (!isPanning) return;
+            const dx = e.clientX - panStartRef.current.x;
+            const dy = e.clientY - panStartRef.current.y;
+            setPanOffset({
+                x: panOffsetStartRef.current.x + dx,
+                y: panOffsetStartRef.current.y + dy,
+            });
+        };
+
+        const handleMouseUp = (e) => {
+            if (e.button === 1 && isPanning) {
+                setIsPanning(false);
+                container.style.cursor = '';
+            }
+        };
+
+        // Prevent default middle-click scroll behavior
+        const handleAuxClick = (e) => {
+            if (e.button === 1) e.preventDefault();
+        };
+
+        container.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        container.addEventListener('auxclick', handleAuxClick);
+
+        return () => {
+            container.removeEventListener('mousedown', handleMouseDown);
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+            container.removeEventListener('auxclick', handleAuxClick);
+        };
+    }, [isPanning, panOffset]);
+
+    // Zoom controls
+    const zoomIn = useCallback(() => {
+        setZoom(prev => Math.min(MAX_ZOOM, Math.round((prev + ZOOM_STEP) * 100) / 100));
+    }, []);
+    const zoomOut = useCallback(() => {
+        setZoom(prev => Math.max(MIN_ZOOM, Math.round((prev - ZOOM_STEP) * 100) / 100));
+    }, []);
+    const resetView = useCallback(() => {
+        setZoom(1);
+        setPanOffset({ x: 0, y: 0 });
+    }, []);
+
+    // Handle drop from sidebar (adjust for zoom + pan)
     const handleDrop = useCallback((e) => {
         e.preventDefault();
         const canvasRect = canvasRef.current.getBoundingClientRect();
         const type = e.dataTransfer.getData('deviceType');
 
         if (type) {
-            const x = e.clientX - canvasRect.left - 100;
-            const y = e.clientY - canvasRect.top - 50;
-            addComponent(type, Math.max(0, x), Math.max(0, y));
+            const x = (e.clientX - canvasRect.left) / zoom - 100;
+            const y = (e.clientY - canvasRect.top) / zoom - 50;
+            addComponent(type, x, y);
             console.log(`➕ Created ${type}`);
         }
-    }, [addComponent]);
+    }, [addComponent, zoom]);
 
     const handleDragOver = useCallback((e) => {
         e.preventDefault();
@@ -61,17 +156,19 @@ const Canvas = forwardRef((props, ref) => {
         canvasRef.current.classList.remove('drag-over');
     }, []);
 
-    // Handle device dragging within canvas
+    // Handle device dragging within canvas (adjust for zoom)
     const handleDeviceMouseDown = useCallback((e, component) => {
         if (e.target.closest('button, input, select, .connection-point')) {
             return;
         }
+        // Only left mouse button for device drag
+        if (e.button !== 0) return;
         e.preventDefault();
 
         const rect = e.currentTarget.getBoundingClientRect();
         setDragOffset({
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top
+            x: (e.clientX - rect.left),
+            y: (e.clientY - rect.top)
         });
         setDraggingDevice(component);
     }, []);
@@ -79,22 +176,22 @@ const Canvas = forwardRef((props, ref) => {
     const handleMouseMove = useCallback((e) => {
         if (draggingDevice) {
             const canvasRect = canvasRef.current.getBoundingClientRect();
-            const newX = e.clientX - canvasRect.left - dragOffset.x;
-            const newY = e.clientY - canvasRect.top - dragOffset.y;
+            const newX = (e.clientX - canvasRect.left) / zoom - dragOffset.x / zoom;
+            const newY = (e.clientY - canvasRect.top) / zoom - dragOffset.y / zoom;
 
             updateComponentPosition(
                 draggingDevice.id,
-                Math.max(0, newX),
-                Math.max(0, newY)
+                newX,
+                newY
             );
         }
-    }, [draggingDevice, dragOffset, updateComponentPosition]);
+    }, [draggingDevice, dragOffset, updateComponentPosition, zoom]);
 
     const handleMouseUp = useCallback(() => {
         setDraggingDevice(null);
     }, []);
 
-    // Add global mouse event listeners
+    // Add global mouse event listeners for device dragging
     useEffect(() => {
         if (draggingDevice) {
             document.addEventListener('mousemove', handleMouseMove);
@@ -119,7 +216,7 @@ const Canvas = forwardRef((props, ref) => {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [connectionStartPoint, clearConnectionStart]);
 
-    // Render device based on type - uses registry for dynamic component lookup
+    // Render device based on type
     const renderDevice = (component) => {
         const commonProps = {
             component,
@@ -132,15 +229,12 @@ const Canvas = forwardRef((props, ref) => {
             }
         };
 
-        // Get component from registry dynamically
         const DeviceComponent = getDeviceComponent(component.type);
         return <DeviceComponent key={component.id} {...commonProps} />;
     };
 
-    // Handle wire click to remove connection
-    // Handle wire click to remove connection OR toggle wire type
+    // Handle wire click
     const handleWireClick = useCallback((index) => {
-        // If Loading Error simulation is ON, click toggles wire type instead of deleting
         if (errorSimulation?.loadingError) {
             toggleConnectionWireType(index);
             return;
@@ -168,12 +262,12 @@ const Canvas = forwardRef((props, ref) => {
 
                 points.push({
                     index,
-                    x1: fromRect.left + 7 - svgRect.left,
-                    y1: fromRect.top + 7 - svgRect.top,
-                    x2: toRect.left + 7 - svgRect.left,
-                    y2: toRect.top + 7 - svgRect.top,
+                    x1: (fromRect.left + 7 - svgRect.left) / zoom,
+                    y1: (fromRect.top + 7 - svgRect.top) / zoom,
+                    x2: (toRect.left + 7 - svgRect.left) / zoom,
+                    y2: (toRect.top + 7 - svgRect.top) / zoom,
                     active: isOutputActive(conn.from),
-                    valid: true, // Connection was validated on creation
+                    valid: true,
                     polarity: polarity,
                     wireType: conn.wireProperties?.type || 'standard',
                 });
@@ -181,14 +275,19 @@ const Canvas = forwardRef((props, ref) => {
         });
 
         return points;
-    }, [connections, isOutputActive, wireUpdateTrigger]);
+    }, [connections, isOutputActive, wireUpdateTrigger, zoom]);
 
     const wirePoints = getConnectionPoints();
+    const zoomPercent = Math.round(zoom * 100);
+    const canvasTransform = `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`;
 
     return (
         <>
             {/* SVG for wires */}
-            <svg ref={svgRef} className="wire-canvas">
+            <svg ref={svgRef} className="wire-canvas" style={{
+                transform: canvasTransform,
+                transformOrigin: '0 0',
+            }}>
                 {wirePoints.map((wire) => (
                     <WireConnection
                         key={`${wire.index}-${wire.polarity}`}
@@ -208,12 +307,25 @@ const Canvas = forwardRef((props, ref) => {
             {/* Canvas area */}
             <div
                 ref={canvasRef}
-                className="canvas"
+                className={`canvas ${isPanning ? 'panning' : ''}`}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
+                style={{
+                    transform: canvasTransform,
+                    transformOrigin: '0 0',
+                }}
             >
                 {components.map(renderDevice)}
+            </div>
+
+            {/* Zoom & Pan Controls */}
+            <div className="zoom-controls">
+                <button className="zoom-btn" onClick={zoomOut} title="Zoom Out (Ctrl+Scroll Down)">−</button>
+                <button className="zoom-percent" onClick={resetView} title="Reset View (Zoom & Pan)">
+                    🔍 {zoomPercent}%
+                </button>
+                <button className="zoom-btn" onClick={zoomIn} title="Zoom In (Ctrl+Scroll Up)">+</button>
             </div>
 
             {/* Connection Alerts */}

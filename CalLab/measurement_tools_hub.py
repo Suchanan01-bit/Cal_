@@ -725,8 +725,14 @@ class CalibrationSimulatorWidget(QWidget):
 
         if WEBENGINE_AVAILABLE:
             self.web_view = QWebEngineView()
-            # Resolve path to the built simulator dist/index.html
-            dist_path = Path(__file__).resolve().parent.parent / 'reference' / 'dc-rfsimulator' / 'dist' / 'index.html'
+            # Resolve path: support both dev and PyInstaller frozen builds
+            if getattr(sys, 'frozen', False):
+                # PyInstaller frozen: files extracted to sys._MEIPASS
+                base_path = Path(sys._MEIPASS)
+            else:
+                # Development: relative to this file
+                base_path = Path(__file__).resolve().parent.parent
+            dist_path = base_path / 'reference' / 'dc-rfsimulator' / 'dist' / 'index.html'
             if dist_path.exists():
                 self.web_view.setUrl(QUrl.fromLocalFile(str(dist_path)))
             else:
