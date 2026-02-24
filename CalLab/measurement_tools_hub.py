@@ -839,7 +839,7 @@ class MeasurementToolsHub(QMainWindow):
             self.spectrum_n1996a_widget = QLabel("Agilent N1996A Spectrum Analyzer module not available")
             self.stacked_widget.addWidget(self.spectrum_n1996a_widget)
         
-        # Environment Monitor Widget (Index 13)
+        # Environment Monitor Widget (Index 14)
         self.env_monitor_widget = EnvironmentMonitorWidget()
         self.env_monitor_widget.signal.data_updated.connect(self._update_env_navbar)
         self.stacked_widget.addWidget(self.env_monitor_widget)
@@ -914,7 +914,7 @@ class MeasurementToolsHub(QMainWindow):
                 border: 1px solid rgba(255, 255, 255, 0.55);
             }
         """)
-        self.env_badge.clicked.connect(lambda: self.switch_page(13))
+        self.env_badge.clicked.connect(lambda: self.switch_page(14))
         layout.addWidget(self.env_badge)
         
         layout.addSpacing(12)
@@ -1088,7 +1088,7 @@ class MeasurementToolsHub(QMainWindow):
         env_label, env_container = self.create_collapsible_category(
             "🌡️ Environment",
             [
-                ("🌡️ Fluke 1620A Env Monitor", 13, FLUKE1620_AVAILABLE),
+                ("🌡️ Fluke 1620A Env Monitor", 14, FLUKE1620_AVAILABLE),
             ]
         )
         layout.addWidget(env_label)
@@ -1445,7 +1445,10 @@ class MeasurementToolsHub(QMainWindow):
             "HP 34401A Multimeter - 6.5-digit precision measurement",
             "Fluke 8508A Reference Multimeter - 8.5-digit reference measurement",
             "Keysight 34465A Multimeter - 6.5-digit Truevolt with Temperature/Capacitance",
-            "Rohde & Schwarz Power Meter - Precision Power Measurement (dBm/W)"
+            "Rohde & Schwarz Power Meter - Precision Power Measurement (dBm/W)",
+            "HP/Agilent 33120A Waveform Generator",
+            "Agilent N1996A CSA Spectrum Analyzer - 100 kHz to 3 GHz",
+            "Fluke 1620A Environment Monitor - Real-time Temperature & Humidity"
         ]
         
         if index < len(pages):
