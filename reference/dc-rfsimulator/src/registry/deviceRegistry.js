@@ -20,6 +20,7 @@ import ClampMeter, { config as clampMeterConfig } from '../components/devices/LF
 import LightSource, { config as lightSourceConfig } from '../components/devices/LF/LightSource';
 import Oscilloscope, { config as oscilloscopeConfig } from '../components/devices/LF/Oscilloscope';
 import OscilloscopeCalibrator, { config as oscCalibratorConfig } from '../components/devices/LF/OscilloscopeCalibrator';
+import Fluke117, { config as fluke117Config } from '../components/devices/LF/Fluke117';
 
 // ===== Placeholder Device =====
 import PlaceholderDevice from '../components/devices/PlaceholderDevice';
@@ -39,6 +40,7 @@ export const DEVICES = {
     [lightSourceConfig.type]: lightSourceConfig,
     [oscilloscopeConfig.type]: oscilloscopeConfig,
     [oscCalibratorConfig.type]: oscCalibratorConfig,
+    [fluke117Config.type]: fluke117Config,
 };
 
 /**
@@ -56,6 +58,7 @@ export const DEVICE_COMPONENTS = {
     [lightSourceConfig.type]: LightSource,
     [oscilloscopeConfig.type]: Oscilloscope,
     [oscCalibratorConfig.type]: OscilloscopeCalibrator,
+    [fluke117Config.type]: Fluke117,
 };
 
 /**

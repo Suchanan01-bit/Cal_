@@ -6,12 +6,12 @@
     width: 10000px;
     height: 10000px;
     position: relative;
-    background-color: #1e1a17;
+    background-color: #0f1510;
     background-image:
-        linear-gradient(rgba(180, 120, 60, 0.25) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(180, 120, 60, 0.25) 1px, transparent 1px),
-        linear-gradient(rgba(180, 120, 60, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(180, 120, 60, 0.08) 1px, transparent 1px);
+        linear-gradient(rgba(249, 115, 22, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249, 115, 22, 0.18) 1px, transparent 1px),
+        linear-gradient(rgba(249, 115, 22, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249, 115, 22, 0.05) 1px, transparent 1px);
     background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
     overflow: visible;
 }

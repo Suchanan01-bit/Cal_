@@ -76,9 +76,9 @@
 }
 
 .mode-btn.active {
-    background: linear-gradient(to bottom, #f97316, #ea580c);
-    border-color: #c2410c;
-    box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+    background: linear-gradient(to bottom, #4A90E2, #2f6fc7);
+    border-color: #1e4da0;
+    box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
 }
 
 /* Display */

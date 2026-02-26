@@ -75,8 +75,8 @@
 }
 
 .sma-preset-btn {
-    background: linear-gradient(to bottom, #f97316, #c2410c);
-    border: 2px solid #9a3412;
+    background: linear-gradient(to bottom, #4A90E2, #1e4da0);
+    border: 2px solid #1e3a8a;
     border-radius: 4px;
     padding: 8px 4px;
     font-size: 9px;
@@ -335,8 +335,8 @@
 }
 
 .sma-func-btn.highlight {
-    background: linear-gradient(to bottom, #f97316, #c2410c);
-    border-color: #9a3412;
+    background: linear-gradient(to bottom, #4A90E2, #1e4da0);
+    border-color: #1e3a8a;
     color: white;
 }
 
@@ -542,7 +542,7 @@
 .sma-arrow-btn.center {
     grid-column: 2;
     grid-row: 2;
-    background: linear-gradient(to bottom, #f97316, #c2410c);
+    background: linear-gradient(to bottom, #4A90E2, #1e4da0);
     color: white;
     font-size: 6px;
     font-weight: bold;

@@ -725,14 +725,8 @@ class CalibrationSimulatorWidget(QWidget):
 
         if WEBENGINE_AVAILABLE:
             self.web_view = QWebEngineView()
-            # Resolve path: support both dev and PyInstaller frozen builds
-            if getattr(sys, 'frozen', False):
-                # PyInstaller frozen: files extracted to sys._MEIPASS
-                base_path = Path(sys._MEIPASS)
-            else:
-                # Development: relative to this file
-                base_path = Path(__file__).resolve().parent.parent
-            dist_path = base_path / 'reference' / 'dc-rfsimulator' / 'dist' / 'index.html'
+            # Resolve path to the built simulator dist/index.html
+            dist_path = Path(__file__).resolve().parent.parent / 'reference' / 'dc-rfsimulator' / 'dist' / 'index.html'
             if dist_path.exists():
                 self.web_view.setUrl(QUrl.fromLocalFile(str(dist_path)))
             else:
@@ -1199,6 +1193,7 @@ class MeasurementToolsHub(QMainWindow):
                 ("📟 HP 34401A Multimeter", 8, MULTIMETER_34401_AVAILABLE),
                 ("📟 Keysight 34465A Multimeter", 10, MULTIMETER_34465_AVAILABLE),
                 ("📟 Fluke 8508A Reference Multimeter", 9, MULTIMETER_8508_AVAILABLE),
+                ("🔆 Fluke 117 True RMS Multimeter", 0, False),
                 ("⚡ Power Supply", 5, False),
                 ("🔋 DC Source", 10, False),
             ]
@@ -1530,6 +1525,8 @@ class MeasurementToolsHub(QMainWindow):
              "Coming Soon", 6),
             ("Agilent N1996A CSA", "Cable & Antenna Spectrum Analyzer, 100 kHz – 3 GHz.", "📡",
              "Available" if SPECTRUM_N1996A_AVAILABLE else "Not Available", 13),
+            ("Fluke 117 True RMS Multimeter", "3.5-digit handheld True RMS multimeter for AC/DC voltage, current, resistance, Hz & continuity.", "🔆",
+             "Coming Soon", 0),
         ]
         
         row, col = 0, 0

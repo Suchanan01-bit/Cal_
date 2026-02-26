@@ -52,7 +52,7 @@
 }
 
 .category.rf .category-title {
-    background: linear-gradient(135deg, var(--orange-500) 0%, var(--orange-700) 100%);
+    background: linear-gradient(135deg, var(--orange-400) 0%, var(--orange-600) 100%);
 }
 
 .category.lf .category-title {

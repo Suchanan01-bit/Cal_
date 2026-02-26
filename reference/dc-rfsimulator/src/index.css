@@ -4,16 +4,16 @@
 
 /* --- CSS Variables --- */
 :root {
-  /* Primary Colors - Orange Theme */
+  /* Primary Colors - Orange Theme (Original) */
   --primary-color: #f97316;
   --primary-dark: #ea580c;
   --primary-light: #fb923c;
   --success-color: #22c55e;
   --warning-color: #eab308;
   --danger-color: #ef4444;
-  --info-color: #f97316;
+  --info-color: #fb923c;
 
-  /* Neutral Colors - Black Theme */
+  /* Neutral Colors - Dark Theme */
   --dark-bg: #0a0a0a;
   --dark-secondary: #171717;
   --dark-tertiary: #262626;
@@ -21,7 +21,7 @@
   --text-light: #a1a1aa;
   --text-white: #ffffff;
 
-  /* Orange Accent */
+  /* Orange Scale */
   --orange-50: #fff7ed;
   --orange-100: #ffedd5;
   --orange-200: #fed7aa;
@@ -69,13 +69,14 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--orange-600);
+  background: #4A90E2;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--orange-500);
+  background: #50C9E8;
 }
+
 
 /* --- Common Utilities --- */
 .hidden {

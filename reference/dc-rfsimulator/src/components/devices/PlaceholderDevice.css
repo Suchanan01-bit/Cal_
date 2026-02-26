@@ -20,13 +20,13 @@
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
-    border-bottom: 2px solid #f97316;
+    border-bottom: 2px solid #4A90E2;
 }
 
 .placeholder-logo {
     font-weight: bold;
     font-size: 18px;
-    color: #f97316;
+    color: #4A90E2;
 }
 
 .placeholder-model {
