@@ -96,6 +96,7 @@ except ImportError:
 
 
 
+
 class InstrumentCard(QFrame):
     """Card widget for each instrument"""
     
@@ -388,7 +389,7 @@ class EnvironmentMonitorWidget(QWidget):
         title_row.addWidget(self.status_label)
         layout.addLayout(title_row)
         
-        subtitle = QLabel("Real-time temperature & humidity from Fluke 1620A DewK")
+        subtitle = QLabel("Real-time temperature humidity graph")
         subtitle.setFont(QFont("Segoe UI", 10))
         subtitle.setStyleSheet("color: #6b7280;")
         layout.addWidget(subtitle)
@@ -819,6 +820,314 @@ class CalibrationSimulatorWindow(QMainWindow):
         root.addWidget(self._sim_widget, 1)
 
 
+class InstrumentGuidePanel(QFrame):
+    """Dropdown panel showing instrument connection diagrams and calibration procedures"""
+    
+    INSTRUMENTS = [
+        ("agilent_53132",   "🔬  Agilent 53132 Universal Counter"),
+        ("fluke_8846a",     "📟  Fluke 8846A Precision Multimeter"),
+        ("hp_3458a",        "📟  HP 3458A Multimeter"),
+        ("hp_34401a",       "📟  HP 34401A Multimeter"),
+        ("keysight_34465a", "📟  Keysight 34465A Multimeter"),
+        ("fluke_8508a",     "📟  Fluke 8508A Reference Multimeter"),
+        ("rs_power_meter",  "📡  R&S Power Meter"),
+        ("hp_33120a",       "🌊  HP 33120A Waveform Generator"),
+        ("agilent_n1996a",  "📡  Agilent N1996A Spectrum Analyzer"),
+        ("fluke_1620",      "🌡️  Fluke 1620 Environment Monitor"),
+    ]
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("guidePanel")
+        self._current_mode = "connection"
+        self._current_instrument = None
+        self._guides_dir = Path(__file__).parent / "guides"
+        self.setVisible(False)
+        self.setMaximumHeight(0)
+        self._setup_ui()
+    
+    def _setup_ui(self):
+        self.setStyleSheet("""
+            QFrame#guidePanel {
+                background-color: #ffffff;
+                border-bottom: 2px solid #e5e7eb;
+            }
+        """)
+        
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(0)
+        
+        # ── Tab bar ──
+        tab_bar = QFrame()
+        tab_bar.setStyleSheet("QFrame { background-color: #f0f4f8; border-bottom: 1px solid #e5e7eb; }")
+        tab_layout = QHBoxLayout(tab_bar)
+        tab_layout.setContentsMargins(20, 6, 20, 6)
+        tab_layout.setSpacing(8)
+        
+        title_lbl = QLabel("📖 Instrument Guide")
+        title_lbl.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
+        title_lbl.setStyleSheet("color: #374151;")
+        tab_layout.addWidget(title_lbl)
+        tab_layout.addSpacing(16)
+        
+        self.conn_tab_btn = QPushButton("🔌  Connection && Panel")
+        self.proc_tab_btn = QPushButton("📋  Calibration Procedure")
+        
+        for btn in (self.conn_tab_btn, self.proc_tab_btn):
+            btn.setFont(QFont("Segoe UI", 10, QFont.Weight.Medium))
+            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setFixedHeight(32)
+        
+        self.conn_tab_btn.clicked.connect(lambda: self._switch_mode("connection"))
+        self.proc_tab_btn.clicked.connect(lambda: self._switch_mode("procedure"))
+        
+        tab_layout.addWidget(self.conn_tab_btn)
+        tab_layout.addWidget(self.proc_tab_btn)
+        tab_layout.addStretch()
+        
+        # Close button
+        close_btn = QPushButton("✕")
+        close_btn.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
+        close_btn.setFixedSize(30, 30)
+        close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        close_btn.setStyleSheet("""
+            QPushButton { color: #6b7280; background: transparent; border: none; border-radius: 15px; }
+            QPushButton:hover { background-color: #fee2e2; color: #dc2626; }
+        """)
+        close_btn.clicked.connect(self.toggle_panel)
+        tab_layout.addWidget(close_btn)
+        
+        root.addWidget(tab_bar)
+        
+        # ── Content area ──
+        content = QFrame()
+        content.setStyleSheet("QFrame { background-color: #ffffff; }")
+        content_layout = QHBoxLayout(content)
+        content_layout.setContentsMargins(0, 0, 0, 0)
+        content_layout.setSpacing(0)
+        
+        # Left: instrument list
+        list_frame = QFrame()
+        list_frame.setFixedWidth(260)
+        list_frame.setStyleSheet("QFrame { background-color: #f9fafb; border-right: 1px solid #e5e7eb; }")
+        list_vlayout = QVBoxLayout(list_frame)
+        list_vlayout.setContentsMargins(8, 8, 8, 8)
+        list_vlayout.setSpacing(2)
+        
+        list_header = QLabel("Select Instrument")
+        list_header.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
+        list_header.setStyleSheet("color: #6b7280; letter-spacing: 0.5px; padding: 4px 8px;")
+        list_vlayout.addWidget(list_header)
+        
+        self._instrument_buttons = []
+        for inst_id, inst_name in self.INSTRUMENTS:
+            btn = QPushButton(inst_name)
+            btn.setFont(QFont("Segoe UI", 10))
+            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setStyleSheet(self._inst_btn_style(False))
+            btn.setFixedHeight(36)
+            btn.clicked.connect(lambda checked, iid=inst_id: self._select_instrument(iid))
+            list_vlayout.addWidget(btn)
+            self._instrument_buttons.append((inst_id, btn))
+        
+        list_vlayout.addStretch()
+        content_layout.addWidget(list_frame)
+        
+        # Right: image viewer
+        viewer_frame = QFrame()
+        viewer_frame.setStyleSheet("QFrame { background-color: #ffffff; }")
+        viewer_layout = QVBoxLayout(viewer_frame)
+        viewer_layout.setContentsMargins(20, 12, 20, 12)
+        viewer_layout.setSpacing(8)
+        
+        self._viewer_title = QLabel("Select an instrument to view guide")
+        self._viewer_title.setFont(QFont("Segoe UI", 14, QFont.Weight.Bold))
+        self._viewer_title.setStyleSheet("color: #374151;")
+        viewer_layout.addWidget(self._viewer_title)
+        
+        self._viewer_subtitle = QLabel("")
+        self._viewer_subtitle.setFont(QFont("Segoe UI", 10))
+        self._viewer_subtitle.setStyleSheet("color: #6b7280;")
+        viewer_layout.addWidget(self._viewer_subtitle)
+        
+        self._image_scroll = QScrollArea()
+        self._image_scroll.setWidgetResizable(True)
+        self._image_scroll.setStyleSheet("""
+            QScrollArea { border: 1px solid #e5e7eb; border-radius: 8px; background-color: #fafafa; }
+            QScrollBar:vertical { width: 8px; background: transparent; }
+            QScrollBar::handle:vertical { background: #d1d5db; border-radius: 4px; min-height: 30px; }
+            QScrollBar::handle:vertical:hover { background: #9ca3af; }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
+        """)
+        
+        self._image_container = QWidget()
+        self._image_layout = QVBoxLayout(self._image_container)
+        self._image_layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        self._image_layout.setContentsMargins(12, 12, 12, 12)
+        self._image_layout.setSpacing(12)
+        self._image_scroll.setWidget(self._image_container)
+        
+        viewer_layout.addWidget(self._image_scroll, 1)
+        content_layout.addWidget(viewer_frame, 1)
+        
+        root.addWidget(content, 1)
+        
+        self._update_tab_styles()
+        self._show_placeholder()
+    
+    # ── Helpers ──
+    def _inst_btn_style(self, active: bool) -> str:
+        if active:
+            return """
+                QPushButton {
+                    background-color: #dbeafe; color: #1d4ed8;
+                    border: 1px solid #93c5fd; border-radius: 6px;
+                    text-align: left; padding: 4px 10px; font-weight: 600;
+                }
+            """
+        return """
+            QPushButton {
+                background-color: transparent; color: #374151;
+                border: 1px solid transparent; border-radius: 6px;
+                text-align: left; padding: 4px 10px;
+            }
+            QPushButton:hover {
+                background-color: #f3f4f6; border: 1px solid #e5e7eb;
+            }
+        """
+    
+    def _tab_style(self, active: bool) -> str:
+        if active:
+            return """
+                QPushButton {
+                    background-color: #4A90E2; color: white; border: none;
+                    border-radius: 6px; padding: 4px 16px; font-weight: 600;
+                }
+            """
+        return """
+            QPushButton {
+                background-color: #e5e7eb; color: #4b5563; border: none;
+                border-radius: 6px; padding: 4px 16px;
+            }
+            QPushButton:hover { background-color: #d1d5db; }
+        """
+    
+    def _update_tab_styles(self):
+        self.conn_tab_btn.setStyleSheet(self._tab_style(self._current_mode == "connection"))
+        self.proc_tab_btn.setStyleSheet(self._tab_style(self._current_mode == "procedure"))
+    
+    def _clear_images(self):
+        while self._image_layout.count():
+            item = self._image_layout.takeAt(0)
+            w = item.widget()
+            if w:
+                w.deleteLater()
+    
+    def _show_placeholder(self, message=None):
+        self._clear_images()
+        msg = message or "👈 Select an instrument from the list to view the guide"
+        lbl = QLabel(msg)
+        lbl.setFont(QFont("Segoe UI", 12))
+        lbl.setStyleSheet("color: #9ca3af; padding: 40px;")
+        lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        lbl.setWordWrap(True)
+        self._image_layout.addWidget(lbl)
+    
+    # ── Actions ──
+    def toggle_panel(self):
+        if self.isVisible() and self.maximumHeight() > 0:
+            anim = QPropertyAnimation(self, b"maximumHeight")
+            anim.setDuration(250)
+            anim.setStartValue(self.height())
+            anim.setEndValue(0)
+            anim.setEasingCurve(QEasingCurve.Type.InQuad)
+            anim.finished.connect(lambda: self.setVisible(False))
+            self._anim = anim
+            anim.start()
+        else:
+            self.setVisible(True)
+            self.setMaximumHeight(0)
+            anim = QPropertyAnimation(self, b"maximumHeight")
+            anim.setDuration(300)
+            anim.setStartValue(0)
+            anim.setEndValue(420)
+            anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+            self._anim = anim
+            anim.start()
+    
+    def _switch_mode(self, mode: str):
+        self._current_mode = mode
+        self._update_tab_styles()
+        if self._current_instrument:
+            self._load_images(self._current_instrument)
+        else:
+            mode_label = "Connection & Panel" if mode == "connection" else "Calibration Procedure"
+            self._viewer_subtitle.setText(f"Mode: {mode_label}")
+    
+    def _select_instrument(self, inst_id: str):
+        self._current_instrument = inst_id
+        for iid, btn in self._instrument_buttons:
+            btn.setStyleSheet(self._inst_btn_style(iid == inst_id))
+        self._load_images(inst_id)
+    
+    def _load_images(self, inst_id: str):
+        display_name = inst_id
+        for iid, name in self.INSTRUMENTS:
+            if iid == inst_id:
+                display_name = name
+                break
+        
+        mode_label = "Connection & Panel" if self._current_mode == "connection" else "Calibration Procedure"
+        self._viewer_title.setText(display_name)
+        self._viewer_subtitle.setText(f"📂 {mode_label}")
+        
+        img_dir = self._guides_dir / inst_id / self._current_mode
+        image_extensions = {'.png', '.jpg', '.jpeg', '.bmp', '.gif', '.webp'}
+        
+        images = []
+        if img_dir.exists():
+            images = sorted(
+                [f for f in img_dir.iterdir() if f.suffix.lower() in image_extensions],
+                key=lambda p: p.name
+            )
+        
+        self._clear_images()
+        
+        if not images:
+            emoji = "🔌" if self._current_mode == "connection" else "📋"
+            self._show_placeholder(
+                f"{emoji} No {mode_label.lower()} images found\n\n"
+                f"Add PNG/JPG images to:\n"
+                f"CalLab/guides/{inst_id}/{self._current_mode}/"
+            )
+            return
+        
+        for img_path in images:
+            from PyQt6.QtGui import QPixmap
+            pixmap = QPixmap(str(img_path))
+            if pixmap.isNull():
+                continue
+            scaled = pixmap.scaledToWidth(
+                min(800, pixmap.width()),
+                Qt.TransformationMode.SmoothTransformation
+            )
+            img_label = QLabel()
+            img_label.setPixmap(scaled)
+            img_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            img_label.setStyleSheet("border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px; background: white;")
+            self._image_layout.addWidget(img_label)
+            
+            caption = QLabel(img_path.stem.replace("_", " ").replace("-", " ").title())
+            caption.setFont(QFont("Segoe UI", 9))
+            caption.setStyleSheet("color: #6b7280; border: none;")
+            caption.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self._image_layout.addWidget(caption)
+
+
+
+
+
 class MeasurementToolsHub(QMainWindow):
     """Main hub window for all measurement instruments"""
     
@@ -843,6 +1152,10 @@ class MeasurementToolsHub(QMainWindow):
         header = self.create_header()
         main_layout.addWidget(header)
         
+        # Instrument Guide Panel (dropdown, hidden by default)
+        self.guide_panel = InstrumentGuidePanel()
+        main_layout.addWidget(self.guide_panel)
+        
         # Content area
         content_layout = QHBoxLayout()
         content_layout.setSpacing(0)
@@ -864,7 +1177,7 @@ class MeasurementToolsHub(QMainWindow):
         # Add instrument pages
         if COUNTER_AVAILABLE:
             self.counter_widget = UniversalCounterGUI()
-            self.counter_widget.setWindowFlags(Qt.WindowType.Widget)  # Make it a widget, not a window
+            self.counter_widget.setWindowFlags(Qt.WindowType.Widget)
             self.stacked_widget.addWidget(self.counter_widget)
         else:
             self.counter_widget = QLabel("Universal Counter module not available")
@@ -1036,7 +1349,31 @@ class MeasurementToolsHub(QMainWindow):
         self.env_badge.clicked.connect(lambda: self.switch_page(14))
         layout.addWidget(self.env_badge)
         
-        layout.addSpacing(12)
+        layout.addSpacing(8)
+        
+        # Instrument guide button
+        self.guide_btn = QPushButton("📖")
+        self.guide_btn.setFont(QFont("Segoe UI Emoji", 14))
+        self.guide_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.guide_btn.setToolTip("Instrument Guide")
+        self.guide_btn.setFixedSize(38, 38)
+        self.guide_btn.setStyleSheet("""
+            QPushButton {
+                color: white;
+                background-color: rgba(255, 255, 255, 0.18);
+                border: 1px solid rgba(255, 255, 255, 0.35);
+                border-radius: 19px;
+                padding: 0px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.35);
+                border: 1px solid rgba(255, 255, 255, 0.55);
+            }
+        """)
+        self.guide_btn.clicked.connect(self._toggle_guide)
+        layout.addWidget(self.guide_btn)
+        
+        layout.addSpacing(8)
         
         # System status indicator
         status_widget = QWidget()
@@ -1535,6 +1872,7 @@ class MeasurementToolsHub(QMainWindow):
             card.setCursor(Qt.CursorShape.PointingHandCursor)
             card.mousePressEvent = lambda event, idx=index: self.switch_page(idx)
             grid_layout.addWidget(card, row, col)
+
             
             col += 1
             if col > 2:  # 3 columns
@@ -1548,19 +1886,22 @@ class MeasurementToolsHub(QMainWindow):
         layout.addWidget(scroll, 1)
         
         # Professional stats panel
-        stats_frame = QFrame()
-        stats_frame.setStyleSheet("""
+        self.stats_frame = QFrame()
+        self.stats_frame.setStyleSheet("""
             QFrame {
                 background-color: #f5f5f7;
                 border: 1px solid #d1d5db;
                 border-radius: 8px;
             }
         """)
-        stats_frame.setMaximumHeight(85)
+        self.stats_frame.setMaximumHeight(85)
         
-        stats_layout = QHBoxLayout(stats_frame)
+        stats_layout = QHBoxLayout(self.stats_frame)
         stats_layout.setSpacing(50)
         stats_layout.setContentsMargins(30, 15, 30, 15)
+        
+        self.stat_value_labels = []
+        self.stat_name_labels = []
         
         stats = [
             ("TOTAL", "7"),
@@ -1577,10 +1918,12 @@ class MeasurementToolsHub(QMainWindow):
             value_label = QLabel(value)
             value_label.setFont(QFont("Consolas", 26, QFont.Weight.Bold))
             value_label.setStyleSheet("color: #2980b9;")
+            self.stat_value_labels.append(value_label)
             
             label_label = QLabel(label)
             label_label.setFont(QFont("Segoe UI", 10, QFont.Weight.Medium))
             label_label.setStyleSheet("color: #7f8c8d; letter-spacing: 1px;")
+            self.stat_name_labels.append(label_label)
             
             stat_layout.addWidget(value_label)
             stat_layout.addWidget(label_label)
@@ -1589,7 +1932,7 @@ class MeasurementToolsHub(QMainWindow):
         
         stats_layout.addStretch()
         
-        layout.addWidget(stats_frame)
+        layout.addWidget(self.stats_frame)
         
         return page
     
@@ -1695,6 +2038,12 @@ class MeasurementToolsHub(QMainWindow):
         else:             # Any other page — CAL-LAB is the "home" badge
             self.cal_sim_btn.setStyleSheet(_inactive)
             self.cal_lab_btn.setStyleSheet(_active)
+    
+
+
+    def _toggle_guide(self):
+        """Toggle the instrument guide dropdown panel"""
+        self.guide_panel.toggle_panel()
     
     def show_about(self):
         """Show about dialog"""
