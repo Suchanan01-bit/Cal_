@@ -1317,7 +1317,7 @@ class MeasurementToolsHub(QMainWindow):
         layout.setContentsMargins(30, 15, 30, 15)
         
         # Professional title
-        title_label = QLabel("⚙ MEASUREMENT TOOLS HUB")
+        title_label = QLabel("MEASUREMENT TOOLS HUB")
         title_label.setFont(QFont("Segoe UI", 22, QFont.Weight.Bold))
         title_label.setStyleSheet("""
             color: white; 
@@ -1885,54 +1885,6 @@ class MeasurementToolsHub(QMainWindow):
         scroll.setWidget(scroll_content)
         layout.addWidget(scroll, 1)
         
-        # Professional stats panel
-        self.stats_frame = QFrame()
-        self.stats_frame.setStyleSheet("""
-            QFrame {
-                background-color: #f5f5f7;
-                border: 1px solid #d1d5db;
-                border-radius: 8px;
-            }
-        """)
-        self.stats_frame.setMaximumHeight(85)
-        
-        stats_layout = QHBoxLayout(self.stats_frame)
-        stats_layout.setSpacing(50)
-        stats_layout.setContentsMargins(30, 15, 30, 15)
-        
-        self.stat_value_labels = []
-        self.stat_name_labels = []
-        
-        stats = [
-            ("TOTAL", "7"),
-            ("ONLINE", "3"),
-            ("OFFLINE", "4"),
-        ]
-        
-        for label, value in stats:
-            stat_widget = QWidget()
-            stat_layout = QHBoxLayout(stat_widget)
-            stat_layout.setSpacing(12)
-            stat_layout.setContentsMargins(0, 0, 0, 0)
-            
-            value_label = QLabel(value)
-            value_label.setFont(QFont("Consolas", 26, QFont.Weight.Bold))
-            value_label.setStyleSheet("color: #2980b9;")
-            self.stat_value_labels.append(value_label)
-            
-            label_label = QLabel(label)
-            label_label.setFont(QFont("Segoe UI", 10, QFont.Weight.Medium))
-            label_label.setStyleSheet("color: #7f8c8d; letter-spacing: 1px;")
-            self.stat_name_labels.append(label_label)
-            
-            stat_layout.addWidget(value_label)
-            stat_layout.addWidget(label_label)
-            
-            stats_layout.addWidget(stat_widget)
-        
-        stats_layout.addStretch()
-        
-        layout.addWidget(self.stats_frame)
         
         return page
     
