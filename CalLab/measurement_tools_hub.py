@@ -76,6 +76,12 @@ except ImportError:
     WAVEFORM_33120A_AVAILABLE = False
 
 try:
+    from waveform_33500b_gui import Keysight33500BGeneratorGUI
+    WAVEFORM_33500B_AVAILABLE = True
+except ImportError:
+    WAVEFORM_33500B_AVAILABLE = False
+
+try:
     from spectrum_n1996a_gui import AgilentN1996AGUI
     SPECTRUM_N1996A_AVAILABLE = True
 except ImportError:
@@ -1290,6 +1296,15 @@ class MeasurementToolsHub(QMainWindow):
         else:
             self.multimeter_34461_widget = QLabel("Keysight 34461A module not available")
             self.stacked_widget.addWidget(self.multimeter_34461_widget)
+
+        # Keysight 33500B Waveform Generator (Index 17)
+        if WAVEFORM_33500B_AVAILABLE:
+            self.waveform_33500b_widget = Keysight33500BGeneratorGUI()
+            self.waveform_33500b_widget.setWindowFlags(Qt.WindowType.Widget)
+            self.stacked_widget.addWidget(self.waveform_33500b_widget)
+        else:
+            self.waveform_33500b_widget = QLabel("Keysight 33500B Waveform Generator module not available")
+            self.stacked_widget.addWidget(self.waveform_33500b_widget)
         
         content_layout.addWidget(self.stacked_widget, 1)
         
@@ -1562,6 +1577,7 @@ class MeasurementToolsHub(QMainWindow):
                 ("🔬 Agilent 53132 Universal Counter", 1, COUNTER_AVAILABLE),
                 ("📡 Power Meter (R&S NRP)", 11, RS_POWER_METER_AVAILABLE),
                 ("🌊 HP 33120A Waveform Generator", 12, WAVEFORM_33120A_AVAILABLE),
+                ("〰️ Keysight 33500B Waveform Generator", 17, WAVEFORM_33500B_AVAILABLE),
                 ("📡 Agilent N1996A Spectrum Analyzer", 13, SPECTRUM_N1996A_AVAILABLE),
                 ("🌊 Signal Generator", 6, False),
                 ("📻 Network Analyzer", 10, False),
@@ -1870,6 +1886,8 @@ class MeasurementToolsHub(QMainWindow):
              "Available" if MULTIMETER_34465_AVAILABLE else "Not Available", 10),
             ("Keysight 34461A Multimeter", "6.5-digit Truevolt DMM with DC/AC Voltage, Current, Resistance, Freq, Continuity & Diode.", "📟", 
              "Available" if MULTIMETER_34461_AVAILABLE else "Not Available", 16),
+            ("Keysight 33500B Waveform Generator", "30 MHz dual-channel function/arbitrary waveform generator with pulse, PRBS & noise.", "〰️",
+             "Available" if WAVEFORM_33500B_AVAILABLE else "Not Available", 17),
             ("Fluke 8508A Reference Multimeter", "8.5-digit reference multimeter for calibration.", "📟", 
              "Not Ready", 9),
             ("Oscilloscope", "Waveform visualization and analysis.", "📊", 
@@ -1956,7 +1974,8 @@ class MeasurementToolsHub(QMainWindow):
             "Agilent N1996A CSA Spectrum Analyzer - 100 kHz to 3 GHz",
             "Fluke 1620A Environment Monitor - Real-time Temperature & Humidity",
             "DC/RF Calibration Simulator - Interactive Calibration Training Platform",
-            "Keysight 34461A Multimeter - 6.5-digit Truevolt DMM"
+            "Keysight 34461A Multimeter - 6.5-digit Truevolt DMM",
+            "Keysight 33500B Waveform Generator - 30 MHz dual-channel function/arbitrary waveform generator"
         ]
         
         if index < len(pages):
