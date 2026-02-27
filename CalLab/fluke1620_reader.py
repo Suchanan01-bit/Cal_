@@ -106,14 +106,25 @@ class Fluke1620Reader:
             self.serial_port.reset_input_buffer()
             self.serial_port.reset_output_buffer()
             
-            # Send command with carriage return
-            cmd_bytes = (command + "\r").encode('ascii')
+            # Send command with CR+LF (Fluke 1620 accepts both \r and \r\n)
+            cmd_bytes = (command + "\r\n").encode('ascii')
             self.serial_port.write(cmd_bytes)
             self.serial_port.flush()
             
-            # Read response (terminated by carriage return)
-            response = self.serial_port.readline().decode('ascii').strip()
-            return response
+            # Wait a bit for the device to process
+            time.sleep(0.3)
+            
+            # Read all available bytes (handles various line terminators)
+            response = b""
+            while self.serial_port.in_waiting > 0 or len(response) == 0:
+                chunk = self.serial_port.read(self.serial_port.in_waiting or 1)
+                if not chunk:
+                    break
+                response += chunk
+                time.sleep(0.05)
+            
+            decoded = response.decode('ascii', errors='ignore').strip()
+            return decoded if decoded else None
             
         except Exception as e:
             self.last_error = str(e)

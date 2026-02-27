@@ -540,10 +540,17 @@ class EnvironmentMonitorWidget(QWidget):
     def refresh_ports(self):
         self.port_combo.clear()
         if not FLUKE1620_AVAILABLE:
+            self.port_combo.addItem("Error: Reader module missing")
             return
-        ports = Fluke1620Reader.list_available_ports()
-        for port, desc in ports:
-            self.port_combo.addItem(f"{port} - {desc}", port)
+        
+        try:
+            ports = Fluke1620Reader.list_available_ports()
+            if not ports:
+                self.port_combo.addItem("No COM ports found")
+            for port, desc in ports:
+                self.port_combo.addItem(f"{port} - {desc}", port)
+        except Exception as e:
+            self.port_combo.addItem(f"Error: {e}")
     
     def toggle_connection(self):
         if self.fluke_reader and self.fluke_reader.is_connected():
@@ -758,8 +765,8 @@ class CalibrationSimulatorWidget(QWidget):
             self.web_view = QWebEngineView()
             # Resolve path: support both dev and PyInstaller frozen builds
             if getattr(sys, 'frozen', False):
-                # PyInstaller frozen: files extracted to sys._MEIPASS
-                base_path = Path(sys._MEIPASS)
+                # PyInstaller frozen: use the directory where the .exe lives
+                base_path = Path(sys.executable).resolve().parent
             else:
                 # Development: relative to this file (CalLab -> parent)
                 base_path = Path(__file__).resolve().parent.parent
@@ -877,7 +884,10 @@ class InstrumentGuidePanel(QFrame):
         self.setObjectName("guidePanel")
         self._current_mode = "connection"
         self._current_instrument = None
-        self._guides_dir = Path(__file__).parent / "guides"
+        if getattr(sys, 'frozen', False):
+            self._guides_dir = Path(sys.executable).resolve().parent / "guides"
+        else:
+            self._guides_dir = Path(__file__).parent / "guides"
         self.setVisible(False)
         self.setMaximumHeight(0)
         self._setup_ui()
