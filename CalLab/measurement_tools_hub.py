@@ -58,6 +58,12 @@ except ImportError:
     MULTIMETER_34465_AVAILABLE = False
 
 try:
+    from multimeter_34461_gui import Keysight34461MultimeterGUI
+    MULTIMETER_34461_AVAILABLE = True
+except ImportError:
+    MULTIMETER_34461_AVAILABLE = False
+
+try:
     from rs_power_meter_gui import RSPowerMeterGUI
     RS_POWER_METER_AVAILABLE = True
 except ImportError:
@@ -1275,6 +1281,15 @@ class MeasurementToolsHub(QMainWindow):
         # Calibration Simulator Widget (Index 15)
         self.calibration_sim_widget = CalibrationSimulatorWidget()
         self.stacked_widget.addWidget(self.calibration_sim_widget)
+
+        # Keysight 34461A Multimeter (Index 16)
+        if MULTIMETER_34461_AVAILABLE:
+            self.multimeter_34461_widget = Keysight34461MultimeterGUI()
+            self.multimeter_34461_widget.setWindowFlags(Qt.WindowType.Widget)
+            self.stacked_widget.addWidget(self.multimeter_34461_widget)
+        else:
+            self.multimeter_34461_widget = QLabel("Keysight 34461A module not available")
+            self.stacked_widget.addWidget(self.multimeter_34461_widget)
         
         content_layout.addWidget(self.stacked_widget, 1)
         
@@ -1529,6 +1544,7 @@ class MeasurementToolsHub(QMainWindow):
                 ("📟 HP 3458A Multimeter", 3, MULTIMETER_3458_AVAILABLE),
                 ("📟 HP 34401A Multimeter", 8, MULTIMETER_34401_AVAILABLE),
                 ("📟 Keysight 34465A Multimeter", 10, MULTIMETER_34465_AVAILABLE),
+                ("📟 Keysight 34461A Multimeter", 16, MULTIMETER_34461_AVAILABLE),
                 ("📟 Fluke 8508A Reference Multimeter", 9, MULTIMETER_8508_AVAILABLE),
                 ("🔆 Fluke 117 True RMS Multimeter", 0, False),
                 ("⚡ Power Supply", 5, False),
@@ -1852,6 +1868,8 @@ class MeasurementToolsHub(QMainWindow):
              "Available" if MULTIMETER_34401_AVAILABLE else "Not Available", 8),
             ("Keysight 34465A Multimeter", "6.5-digit Truevolt DMM with Temperature and Capacitance measurement.", "📟", 
              "Available" if MULTIMETER_34465_AVAILABLE else "Not Available", 10),
+            ("Keysight 34461A Multimeter", "6.5-digit Truevolt DMM with DC/AC Voltage, Current, Resistance, Freq, Continuity & Diode.", "📟", 
+             "Available" if MULTIMETER_34461_AVAILABLE else "Not Available", 16),
             ("Fluke 8508A Reference Multimeter", "8.5-digit reference multimeter for calibration.", "📟", 
              "Not Ready", 9),
             ("Oscilloscope", "Waveform visualization and analysis.", "📊", 
@@ -1937,7 +1955,8 @@ class MeasurementToolsHub(QMainWindow):
             "HP/Agilent 33120A Waveform Generator",
             "Agilent N1996A CSA Spectrum Analyzer - 100 kHz to 3 GHz",
             "Fluke 1620A Environment Monitor - Real-time Temperature & Humidity",
-            "DC/RF Calibration Simulator - Interactive Calibration Training Platform"
+            "DC/RF Calibration Simulator - Interactive Calibration Training Platform",
+            "Keysight 34461A Multimeter - 6.5-digit Truevolt DMM"
         ]
         
         if index < len(pages):
