@@ -554,17 +554,44 @@ class EnvironmentMonitorWidget(QWidget):
     def connect_fluke(self):
         port = self.port_combo.currentData()
         if not port or not self.fluke_reader:
+            QMessageBox.warning(self, "No Port Selected", "Please select a valid COM port from the dropdown.")
             return
+            
+        # UI Feedback while connecting
+        self.connect_btn.setText("Connecting...")
+        self.connect_btn.setEnabled(False)
+        self.status_label.setText("● Connecting...")
+        self.status_label.setStyleSheet("color: #eab308;") # yellow/orange
+        QApplication.processEvents() # Force UI update before blocking connect call
+        
         success, msg = self.fluke_reader.connect(port)
+        
+        self.connect_btn.setEnabled(True)
+        
         if success:
-            self.status_label.setText(f"● Connected ({port})")
+            # The msg usually contains "Connected to HART,1620..."
+            self.status_label.setText(f"● {msg}")
             self.status_label.setStyleSheet("color: #16a34a;")
             self.connect_btn.setText("Disconnect")
-            self.connect_btn.setStyleSheet("QPushButton { background-color: #dc2626; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; } QPushButton:hover { background-color: #b91c1c; }")
+            self.connect_btn.setStyleSheet("""
+                QPushButton { background-color: #dc2626; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; }
+                QPushButton:hover { background-color: #b91c1c; }
+            """)
             self.monitor_btn.setEnabled(True)
+            
+            # Automatically start monitoring and plotting to graph
+            self.start_monitoring()
         else:
             self.status_label.setText("● Connection failed")
             self.status_label.setStyleSheet("color: #ef4444;")
+            self.connect_btn.setText("Connect")
+            QMessageBox.critical(
+                self, 
+                "Connection Error", 
+                f"Failed to connect to the instrument on {port}.\n\n"
+                f"Error: {msg}\n\n"
+                "Please check the cable connection, verify the COM port, and ensure the instrument is turned on."
+            )
     
     def disconnect_fluke(self):
         self.stop_monitoring()
@@ -573,7 +600,10 @@ class EnvironmentMonitorWidget(QWidget):
         self.status_label.setText("● Disconnected")
         self.status_label.setStyleSheet("color: #ef4444;")
         self.connect_btn.setText("Connect")
-        self.connect_btn.setStyleSheet("QPushButton { background-color: #0d9488; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; } QPushButton:hover { background-color: #0f766e; }")
+        self.connect_btn.setStyleSheet("""
+            QPushButton { background-color: #0d9488; color: white; border: none; border-radius: 4px; padding: 4px 16px; font-weight: bold; }
+            QPushButton:hover { background-color: #0f766e; }
+        """)
         self.monitor_btn.setEnabled(False)
         self.monitor_btn.setText("▶ Start Monitor")
     
@@ -731,7 +761,7 @@ class CalibrationSimulatorWidget(QWidget):
                 # PyInstaller frozen: files extracted to sys._MEIPASS
                 base_path = Path(sys._MEIPASS)
             else:
-                # Development: relative to this file
+                # Development: relative to this file (CalLab -> parent)
                 base_path = Path(__file__).resolve().parent.parent
             dist_path = base_path / 'reference' / 'dc-rfsimulator' / 'dist' / 'index.html'
             if dist_path.exists():
