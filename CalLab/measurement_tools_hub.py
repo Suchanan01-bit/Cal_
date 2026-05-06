@@ -87,12 +87,17 @@ try:
 except ImportError:
     FLUKE1620_AVAILABLE = False
 
+import os
+import sys
+from pathlib import Path
+root_path = str(Path(__file__).resolve().parent.parent)
+if root_path not in sys.path:
+    sys.path.append(root_path)
+
 try:
-    from PyQt6.QtWebEngineWidgets import QWebEngineView
-    from PyQt6.QtCore import QUrl
-    WEBENGINE_AVAILABLE = True
-except ImportError:
-    WEBENGINE_AVAILABLE = False
+    from CalSim.cal_sim_gui import CalibrationSimulatorWidget, CalibrationSimulatorWindow
+except ImportError as e:
+    print(f'CalSim not available: {e}')
 
 
 
@@ -749,120 +754,6 @@ class EnvironmentMonitorWidget(QWidget):
             print(f"Graph update error: {e}")
 
 
-class CalibrationSimulatorWidget(QWidget):
-    """Widget that embeds the DC-RF Calibration Simulator web app via QWebEngineView"""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setup_ui()
-
-    def setup_ui(self):
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-
-        if WEBENGINE_AVAILABLE:
-            self.web_view = QWebEngineView()
-            # Resolve path: support both dev and PyInstaller frozen builds
-            if getattr(sys, 'frozen', False):
-                # PyInstaller frozen: use the directory where the .exe lives
-                base_path = Path(sys.executable).resolve().parent
-            else:
-                # Development: relative to this file (CalLab -> parent)
-                base_path = Path(__file__).resolve().parent.parent
-            dist_path = base_path / 'reference' / 'dc-rfsimulator' / 'dist' / 'index.html'
-            if dist_path.exists():
-                self.web_view.setUrl(QUrl.fromLocalFile(str(dist_path)))
-            else:
-                self.web_view.setHtml(
-                    '<html><body style="display:flex;align-items:center;justify-content:center;height:100vh;'
-                    'font-family:Segoe UI;color:#6b7280;"><h2>Simulator dist not found.<br>'
-                    f'Expected at: {dist_path}</h2></body></html>'
-                )
-            layout.addWidget(self.web_view)
-        else:
-            placeholder = QLabel(
-                "⚠️ PyQt6-WebEngine is not installed.\n\n"
-                "Install it with:\n  pip install PyQt6-WebEngine"
-            )
-            placeholder.setFont(QFont("Segoe UI", 14))
-            placeholder.setStyleSheet("color: #e67e22; padding: 60px;")
-            placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            layout.addWidget(placeholder)
-
-
-class CalibrationSimulatorWindow(QMainWindow):
-    """Standalone window for the DC-RF Calibration Simulator — no sidebar"""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Calibration Simulator — Cal-Lab")
-        self.setGeometry(50, 50, 1600, 950)
-        self._setup_ui()
-
-    def _setup_ui(self):
-        central = QWidget()
-        self.setCentralWidget(central)
-        root = QVBoxLayout(central)
-        root.setContentsMargins(0, 0, 0, 0)
-        root.setSpacing(0)
-
-        # ── Header (same teal gradient as hub) ──────────────────────
-        header = QFrame()
-        header.setObjectName("cal_sim_header")
-        header.setStyleSheet("""
-            QFrame#cal_sim_header {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                    stop:0 #4A90E2, stop:0.5 #50C9E8, stop:1 #7DD3C0);
-                border: none;
-            }
-        """)
-        header.setFixedHeight(70)
-
-        h_layout = QHBoxLayout(header)
-        h_layout.setContentsMargins(30, 15, 30, 15)
-
-        # Title
-        title = QLabel("⚙ Calibration Simulator")
-        title.setFont(QFont("Segoe UI", 22, QFont.Weight.Bold))
-        title.setStyleSheet("color: white; letter-spacing: 2px; font-weight: 600;")
-        h_layout.addWidget(title)
-
-        h_layout.addStretch()
-
-        # CAL-LAB button — closes this window / goes back
-        back_btn = QPushButton("CAL-LAB")
-        back_btn.setFont(QFont("Consolas", 10, QFont.Weight.Bold))
-        back_btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        back_btn.setStyleSheet("""
-            QPushButton {
-                color: #4A90E2;
-                background-color: white;
-                border: 2px solid white;
-                border-radius: 4px;
-                padding: 6px 14px;
-                letter-spacing: 1.5px;
-            }
-            QPushButton:hover {
-                color: white;
-                background-color: rgba(255, 255, 255, 0.30);
-                border: 2px solid white;
-            }
-            QPushButton:pressed {
-                background-color: rgba(255, 255, 255, 0.55);
-                color: #1a73e8;
-            }
-        """)
-        back_btn.clicked.connect(self.close)
-        h_layout.addWidget(back_btn)
-
-        root.addWidget(header)
-
-        # ── Cal Sim Content ─────────────────────────────────────────
-        self._sim_widget = CalibrationSimulatorWidget()
-        root.addWidget(self._sim_widget, 1)
-
-
 class InstrumentGuidePanel(QFrame):
     """Dropdown panel showing instrument connection diagrams and calibration procedures"""
     
@@ -928,8 +819,22 @@ class InstrumentGuidePanel(QFrame):
         self.conn_tab_btn.clicked.connect(lambda: self._switch_mode("connection"))
         self.proc_tab_btn.clicked.connect(lambda: self._switch_mode("procedure"))
         
+        self.config_btn = QPushButton("⚙️ Config Images")
+        self.config_btn.setFont(QFont("Segoe UI", 10, QFont.Weight.Medium))
+        self.config_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.config_btn.setFixedHeight(32)
+        self.config_btn.clicked.connect(self._open_guides_folder)
+        self.config_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db;
+                border-radius: 6px; padding: 4px 16px;
+            }
+            QPushButton:hover { background-color: #e5e7eb; color: #111827; }
+        """)
+
         tab_layout.addWidget(self.conn_tab_btn)
         tab_layout.addWidget(self.proc_tab_btn)
+        tab_layout.addWidget(self.config_btn)
         tab_layout.addStretch()
         
         # Close button
@@ -1144,8 +1049,9 @@ class InstrumentGuidePanel(QFrame):
             emoji = "🔌" if self._current_mode == "connection" else "📋"
             self._show_placeholder(
                 f"{emoji} No {mode_label.lower()} images found\n\n"
-                f"Add PNG/JPG images to:\n"
-                f"CalLab/guides/{inst_id}/{self._current_mode}/"
+                f"Please add PNG/JPG images to:\n"
+                f"{img_dir}\n\n"
+                f"(Click '⚙️ Config Images' to open the folder)"
             )
             return
         
@@ -1170,7 +1076,26 @@ class InstrumentGuidePanel(QFrame):
             caption.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self._image_layout.addWidget(caption)
 
-
+    def _open_guides_folder(self):
+        import os
+        
+        # Ensure base guides dir exists
+        self._guides_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Pre-create all instrument folders so user knows where to drop files
+        for inst_id, _ in self.INSTRUMENTS:
+            (self._guides_dir / inst_id / "connection").mkdir(parents=True, exist_ok=True)
+            (self._guides_dir / inst_id / "procedure").mkdir(parents=True, exist_ok=True)
+            
+        try:
+            if sys.platform == "win32":
+                os.startfile(str(self._guides_dir))
+            else:
+                import subprocess
+                opener = "open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, str(self._guides_dir)])
+        except Exception as e:
+            print(f"Error opening guides folder: {e}")
 
 
 

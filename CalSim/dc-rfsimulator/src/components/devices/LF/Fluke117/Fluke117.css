@@ -1,0 +1,622 @@
+/* ============================================
+   Fluke117.css - Fluke 117 True RMS Multimeter
+   Real rotary dial with radial mode labels
+   Yellow/black industrial handheld design
+   ============================================ */
+
+/* ─── Outer Device Body ─── */
+.fluke117-device {
+    width: 260px;
+    background: linear-gradient(170deg, #F5C518 0%, #E8B400 50%, #CDA000 100%);
+    border-radius: 14px 14px 24px 24px;
+    box-shadow:
+        0 14px 44px rgba(0, 0, 0, 0.55),
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 3px rgba(255, 255, 255, 0.35);
+    border: 2.5px solid #A07800;
+    overflow: hidden;
+    position: relative;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    user-select: none;
+}
+
+/* ─── Header: red stripe with Fluke logo ─── */
+.f117-header {
+    background: linear-gradient(180deg, #cc0000 0%, #a80000 100%);
+    padding: 6px 10px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #800000;
+}
+
+.f117-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.f117-brand-name {
+    font-size: 16px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 2px;
+    font-style: italic;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.f117-model-sub {
+    font-size: 7px;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.f117-header-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.f117-connection-status {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.f117-status-led {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.f117-status-led.disconnected {
+    background: radial-gradient(circle at 30% 30%, #ff6666, #cc0000);
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+.f117-status-led.connected {
+    background: radial-gradient(circle at 30% 30%, #66ff66, #00cc00);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    animation: f117LedPulse 2s ease-in-out infinite;
+}
+
+@keyframes f117LedPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 4px rgba(0, 255, 0, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 12px rgba(0, 255, 0, 0.9);
+    }
+}
+
+.f117-status-text {
+    font-size: 7px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.f117-status-text.connected {
+    color: #66ff66;
+}
+
+.f117-status-text.disconnected {
+    color: #ff9999;
+}
+
+.f117-delete {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.f117-delete:hover {
+    background: rgba(0, 0, 0, 0.65);
+}
+
+/* ─── 4 Top Buttons ─── */
+.f117-top-buttons {
+    display: flex;
+    gap: 4px;
+    padding: 5px 8px 4px;
+    background: #1e1e1e;
+    border-bottom: 2px solid #111;
+}
+
+.f117-top-btn {
+    flex: 1;
+    background: linear-gradient(180deg, #484848 0%, #2a2a2a 100%);
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 5px 2px;
+    font-size: 7.5px;
+    font-weight: 800;
+    color: #bbb;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    transition: all 0.12s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.f117-top-btn:hover:not(:disabled) {
+    background: linear-gradient(180deg, #585858 0%, #3a3a3a 100%);
+    border-color: #F5C518;
+    color: #F5C518;
+}
+
+.f117-top-btn.active {
+    background: linear-gradient(180deg, #F5C518 0%, #D4A600 100%);
+    border-color: #A07800;
+    color: #1a1a1a;
+    box-shadow: 0 0 8px rgba(245, 197, 24, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.f117-top-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+/* ─── LCD Display ─── */
+.f117-display {
+    background: linear-gradient(145deg, #c5d4bb, #adc09e);
+    margin: 6px 8px 4px;
+    border-radius: 6px;
+    padding: 6px 10px 7px;
+    border: 2px solid #6a8060;
+    box-shadow:
+        inset 0 3px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    min-height: 72px;
+}
+
+.f117-display.uncertainty-active {
+    animation: f117DisplayFlicker 0.4s infinite;
+}
+
+@keyframes f117DisplayFlicker {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.87;
+    }
+}
+
+.f117-display-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1px;
+}
+
+.f117-display-flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+
+.f117-flag {
+    font-size: 6.5px;
+    font-weight: 700;
+    color: #8aa87a;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 1px 3px;
+    border-radius: 2px;
+    letter-spacing: 0.3px;
+}
+
+.f117-flag.volt-alert {
+    color: #aa4400;
+}
+
+.f117-flag.flag-on {
+    color: #1a1a1a;
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.f117-flag.flag-hold {
+    color: #cc3300;
+    font-size: 7px;
+}
+
+.f117-flag.flag-minmax {
+    color: #1155cc;
+    font-size: 7px;
+}
+
+.f117-flag.flag-rel {
+    color: #336600;
+    font-size: 7px;
+}
+
+.f117-display-mode {
+    font-size: 8px;
+    font-weight: 700;
+    color: #2d4a2d;
+    background: rgba(0, 0, 0, 0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+/* Main reading */
+.f117-main-value {
+    font-family: 'Courier New', 'Lucida Console', monospace;
+    font-size: 34px;
+    font-weight: 900;
+    color: #1a2e1a;
+    text-align: right;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.f117-main-value.power-off {
+    color: #8da08d;
+    text-shadow: none;
+}
+
+.f117-unit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3px;
+}
+
+.f117-sub-left {
+    font-size: 8px;
+    font-weight: 700;
+    color: #4a6a4a;
+    font-family: monospace;
+}
+
+.f117-unit {
+    font-size: 15px;
+    font-weight: bold;
+    color: #2d4a2d;
+}
+
+/* ─── Dial Area ─── */
+.f117-dial-area {
+    padding: 4px 0 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(170deg, #E8B400 0%, #CDA000 100%);
+}
+
+/* The square container that holds the knob + radial labels */
+.f117-dial-ring-wrap {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+}
+
+/* ─── Radial Mode Labels ─── */
+.f117-ring-label {
+    position: absolute;
+    background: rgba(30, 20, 0, 0.14);
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-radius: 4px;
+    padding: 3px 5px;
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #3a2800;
+    cursor: pointer;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    transition: all 0.12s;
+    line-height: 1.1;
+}
+
+.f117-ring-label:hover {
+    background: rgba(0, 0, 0, 0.28);
+    color: #1a1000;
+    border-color: rgba(0, 0, 0, 0.35);
+}
+
+.f117-ring-label.ring-active {
+    background: #1a1a1a;
+    color: #F5C518;
+    border-color: #555;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    font-size: 9px;
+}
+
+/* ─── Knob ─── */
+.f117-knob {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* transform is applied inline: translate(-50%,-50%) rotate(Xdeg) */
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+/* Serration ring - outermost decorative */
+.f117-knob-serrations {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: transparent;
+    border: 6px solid transparent;
+    box-shadow:
+        0 0 0 2px #1a1a1a,
+        0 0 0 4px rgba(255, 255, 255, 0.05),
+        0 0 0 6px #111;
+}
+
+/* Main knob outer ring */
+.f117-knob-outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 30%,
+            #606060 0%,
+            #303030 40%,
+            #1a1a1a 70%,
+            #0d0d0d 100%);
+    border: 3px solid #111;
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.8),
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        inset 0 3px 6px rgba(255, 255, 255, 0.1),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Inner raised disc */
+.f117-knob-inner {
+    position: absolute;
+    inset: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%,
+            #484848 0%,
+            #222 60%,
+            #111 100%);
+    border: 2px solid #0a0a0a;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 5px;
+}
+
+/* Yellow marker pointer */
+.f117-knob-ptr {
+    width: 5px;
+    height: 14px;
+    background: linear-gradient(180deg, #fff700 0%, #F5C518 50%, #D4A600 100%);
+    border-radius: 2.5px;
+    box-shadow: 0 0 6px rgba(245, 197, 24, 0.8), 0 0 2px rgba(255, 255, 0, 0.6);
+}
+
+/* ─── CCW / CW Arrow Buttons ─── */
+.f117-arrow-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1.5px solid rgba(0, 0, 0, 0.3);
+    color: #3a2800;
+    font-size: 18px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.12s;
+    z-index: 5;
+    padding: 0;
+    line-height: 1;
+}
+
+.f117-arrow-btn.ccw {
+    left: 2px;
+}
+
+.f117-arrow-btn.cw {
+    right: 2px;
+}
+
+.f117-arrow-btn:hover {
+    background: rgba(0, 0, 0, 0.38);
+    color: #1a1000;
+}
+
+/* ─── Dial footer labels ─── */
+.f117-dial-footer {
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
+    padding: 0 2px;
+    margin-top: -4px;
+}
+
+.f117-autov-text {
+    font-size: 7px;
+    font-weight: 700;
+    color: rgba(58, 40, 0, 0.65);
+    letter-spacing: 0.4px;
+}
+
+.f117-catrating {
+    font-size: 7px;
+    color: rgba(58, 40, 0, 0.5);
+    font-weight: 600;
+}
+
+/* ─── Terminal Panel ─── */
+.f117-terminal-panel {
+    background: linear-gradient(180deg, #1e1e1e, #111);
+    border-top: 3px solid #2a2a2a;
+    padding: 7px 12px 9px;
+}
+
+.f117-terminals {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 5px;
+}
+
+.f117-terminal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+}
+
+.f117-jack {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.1);
+}
+
+.f117-jack.red {
+    background: radial-gradient(circle at 30% 30%, #ff7070 0%, #dc2626 70%, #991b1b 100%);
+    border: 3px solid #7a1010;
+}
+
+.f117-jack.black {
+    background: radial-gradient(circle at 30% 30%, #555 0%, #222 70%, #111 100%);
+    border: 3px solid #111;
+}
+
+.f117-jack.yellow {
+    background: radial-gradient(circle at 30% 30%, #ffe066 0%, #d4a600 70%, #8a6a00 100%);
+    border: 3px solid #6a4a00;
+}
+
+.f117-jack-inner {
+    width: 9px;
+    height: 9px;
+    background: radial-gradient(circle, #0a0a0a 0%, #1a1a1a 100%);
+    border-radius: 50%;
+    border: 1px solid #000;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.f117-terminal-label {
+    font-size: 7.5px;
+    font-weight: 800;
+    color: #bbb;
+    letter-spacing: 0.4px;
+    text-align: center;
+}
+
+.f117-terminal.hi .f117-terminal-label {
+    color: #ff7070;
+}
+
+.f117-terminal.lo .f117-terminal-label {
+    color: #888;
+}
+
+.f117-terminal.mA .f117-terminal-label {
+    color: #F5C518;
+}
+
+.f117-safety-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+}
+
+.f117-safety-row span {
+    font-size: 6px;
+    color: #444;
+    letter-spacing: 0.3px;
+}
+
+/* ─── Compliance Badge ─── */
+.f117-compliance-badge {
+    position: absolute;
+    top: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 800;
+    z-index: 10;
+    white-space: nowrap;
+    animation: f117BadgePulse 2s infinite;
+}
+
+@keyframes f117BadgePulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: translateX(-50%) scale(1.03);
+    }
+}
+
+.f117-compliance-badge.compliance {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
+}
+
+.f117-compliance-badge.non-compliance {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.5);
+}
+
+.f117-compliance-badge.out-of-tolerance {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.5);
+}
+
+/* Device border compliance tints */
+.fluke117-device.compliance {
+    border-color: #10b981;
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.4), 0 14px 44px rgba(0, 0, 0, 0.55);
+}
+
+.fluke117-device.non-compliance {
+    border-color: #f59e0b;
+    box-shadow: 0 0 18px rgba(245, 158, 11, 0.4), 0 14px 44px rgba(0, 0, 0, 0.55);
+}
+
+.fluke117-device.out-of-tolerance {
+    border-color: #ef4444;
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.4), 0 14px 44px rgba(0, 0, 0, 0.55);
+}

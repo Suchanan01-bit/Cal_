@@ -47,7 +47,7 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,  # No console window (GUI app)
-    icon=None,      # Add .ico path here if you have one
+    icon=r'C:\Users\Admins\Documents\Github\Cal_\CalLab\assets\icon\ico.ico.ico',      # Custom icon
 )
 
 coll = COLLECT(
