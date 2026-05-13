@@ -297,3 +297,137 @@
     fill: #555 !important;
     stroke: #333 !important;
 }
+
+/* ============================================
+   ENERGY FLOW ANIMATION
+   ============================================ */
+
+.wire-flow-animation {
+    stroke: rgba(255, 255, 255, 0.8);
+    stroke-width: 4;
+    fill: none;
+    stroke-dasharray: 8, 12;
+    animation: wire-flow 1s linear infinite;
+    pointer-events: none;
+    stroke-linecap: round;
+}
+
+@keyframes wire-flow {
+    from {
+        stroke-dashoffset: 20;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.wire-flow-animation.hi {
+    stroke: rgba(255, 200, 200, 0.9);
+}
+
+.wire-flow-animation.lo {
+    stroke: rgba(200, 255, 255, 0.9);
+}
+
+/* ============================================
+   INVISIBLE HIT AREA (wide for easy hovering)
+   ============================================ */
+
+.wire-hit-area {
+    stroke: transparent;
+    stroke-width: 24;
+    fill: none;
+    cursor: pointer;
+    pointer-events: stroke;
+}
+
+/* Highlight wire group on hover */
+.wire-connection-group.hovered .wire-inner {
+    filter: brightness(1.3) drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+}
+
+/* ============================================
+   HOVER TOOLTIP
+   ============================================ */
+
+.wire-tooltip {
+    background: rgba(15, 23, 42, 0.96);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    border: 1px solid rgba(100, 150, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    width: max-content;
+    max-width: 250px;
+    animation: tooltip-fade-in 0.15s ease-out;
+}
+
+@keyframes tooltip-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.wire-tooltip .tooltip-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wire-tooltip .tooltip-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.wire-tooltip .tooltip-indicator.active {
+    background: #4ade80;
+    box-shadow: 0 0 6px rgba(74, 222, 128, 0.6);
+}
+
+.wire-tooltip .tooltip-indicator.inactive {
+    background: #6b7280;
+}
+
+.wire-tooltip .tooltip-title {
+    font-weight: 600;
+    color: #e2e8f0;
+    font-size: 13px;
+}
+
+.wire-tooltip .tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 3px;
+}
+
+.wire-tooltip .tooltip-label {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.wire-tooltip .tooltip-value {
+    color: #cbd5e1;
+    font-weight: 500;
+    font-size: 11px;
+    text-align: right;
+}
+
+.wire-tooltip .tooltip-value.active {
+    color: #4ade80;
+}
+

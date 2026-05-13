@@ -6,7 +6,7 @@
 
 import { forwardRef, useCallback, useRef, useEffect, useState } from 'react';
 import { useSimulator } from '../../context/SimulatorContext';
-import { getDeviceComponent } from '../../registry/deviceRegistry';
+import { getDeviceComponent, getDeviceConfig } from '../../registry/deviceRegistry';
 import PlaceholderDevice from '../devices/PlaceholderDevice';
 import WireConnection from '../common/WireConnection';
 import ConnectionAlert from '../common/ConnectionAlert';
@@ -255,6 +255,26 @@ const Canvas = forwardRef((props, ref) => {
             const fromEl = document.querySelector(`[data-component-id="${conn.from}"] .connection-point.output.${polarity}`);
             const toEl = document.querySelector(`[data-component-id="${conn.to}"] .connection-point.input.${polarity}`);
 
+            let instrumentName = "Unknown Instrument";
+            let flowStatus = "No Output";
+            const fromComp = components.find(c => c.id === conn.from);
+            
+            if (fromComp) {
+                instrumentName = getDeviceConfig(fromComp.type)?.name || fromComp.type;
+                if (isOutputActive(conn.from)) {
+                    if (fromComp.type === 'fluke5500a' || fromComp.type === 'fluke5522a') {
+                         flowStatus = `${fromComp.state.value} ${fromComp.state.prefix}${fromComp.state.unit}`;
+                         if (fromComp.state.mode && fromComp.state.mode.includes('AC')) {
+                             flowStatus += ` @ ${fromComp.state.frequency} Hz`;
+                         }
+                    } else if (fromComp.type === 'sma100a') {
+                         flowStatus = `${fromComp.state.level} dBm @ ${fromComp.state.frequency} ${fromComp.state.frequencyUnit}`;
+                    } else {
+                         flowStatus = "Active";
+                    }
+                }
+            }
+
             if (fromEl && toEl && svgRef.current) {
                 const svgRect = svgRef.current.getBoundingClientRect();
                 const fromRect = fromEl.getBoundingClientRect();
@@ -270,12 +290,14 @@ const Canvas = forwardRef((props, ref) => {
                     valid: true,
                     polarity: polarity,
                     wireType: conn.wireProperties?.type || 'standard',
+                    instrumentName,
+                    flowStatus,
                 });
             }
         });
 
         return points;
-    }, [connections, isOutputActive, wireUpdateTrigger, zoom]);
+    }, [connections, isOutputActive, wireUpdateTrigger, zoom, components]);
 
     const wirePoints = getConnectionPoints();
     const zoomPercent = Math.round(zoom * 100);
@@ -300,6 +322,8 @@ const Canvas = forwardRef((props, ref) => {
                         polarity={wire.polarity}
                         wireType={wire.wireType}
                         onClick={() => handleWireClick(wire.index)}
+                        instrumentName={wire.instrumentName}
+                        flowStatus={wire.flowStatus}
                     />
                 ))}
             </svg>
